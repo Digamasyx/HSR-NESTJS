@@ -112,6 +112,26 @@ export class UserProvider {
     return properties;
   }
 
+  async changeProperties<T extends object>(
+    indexes: (keyof T)[],
+    curr: any,
+    next: Partial<T>,
+    random_pass: boolean,
+  ) {
+    let pass = null;
+    for (const i of indexes) {
+      if (i === 'random_pass') {
+        pass = this.genRandomString(12, [0.7, 0.2, 0.1]);
+        curr.pass = await this.passHash(pass);
+      }
+      if (i === 'pass') {
+        curr.pass = await this.passHash(curr.pass);
+      }
+      curr[i] = next[i];
+    }
+    return random_pass ? [curr, pass] : [curr, 0];
+  }
+
   outMessage<T extends UserProps, K extends object>(
     caller: T,
     arg: ArgType<T, K>,
@@ -128,12 +148,18 @@ export class UserProvider {
       case UserProps.delete:
         const delete_arg = arg as DeleteArg;
         return {
-          message: `User with name: ${delete_arg.name} & UUID: ${delete_arg.uuid} was deleted.`,
+          message: `User with name: '${delete_arg.name}' & UUID: '${delete_arg.uuid}' was deleted.`,
         };
       case UserProps.update:
         const update_arg = arg as UpdateArg<K>;
         return {
           message: `The following field(s) were changed: '${update_arg.properties.join(', ')}'`,
+        };
+      case UserProps.update_w_random:
+        const update_w_random = arg as UpdateArg<K> &
+          Omit<CreateWoPassArg, 'name'>;
+        return {
+          message: `The following field(s) were changed: '${update_w_random.properties.join(', ')}' with pass '${update_w_random.pass}'`,
         };
       default:
         throw new NotImplementedException('Caller not implemented.');
