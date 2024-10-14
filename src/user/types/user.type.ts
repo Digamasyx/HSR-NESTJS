@@ -16,4 +16,6 @@ export type ArgType<
       ? DeleteArg
       : T extends UserProps.update
         ? UpdateArg<K>
-        : never;
+        : T extends UserProps.update_w_random
+          ? UpdateArg<K> & Omit<CreateWoPassArg, 'name'>
+          : never;
