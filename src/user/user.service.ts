@@ -33,12 +33,11 @@ export class UserService implements IUser {
     await this.userRepo.insert(user);
     // * If pass is present and the request does not require a log return void 0
     if (!body.log && !isPassNotPresent) return void 0;
-    // ! Testar mensagem de retorno
-    return isPassNotPresent
+    return !isPassNotPresent
       ? this.userProvider.outMessage(UserProps.create_pass, { name: body.name })
       : this.userProvider.outMessage(UserProps.create_wo_pass, {
           name: body.name,
-          pass: body.pass,
+          pass: pass,
         });
   }
 
@@ -84,7 +83,6 @@ export class UserService implements IUser {
     const uuid = user.user_uuid;
     if (this.userProvider.hasPermission(user, req)) {
       await this.userRepo.remove(user);
-      // ! Testar mensagem de retorno
       return this.userProvider.outMessage(UserProps.delete, {
         name: name,
         uuid: uuid,
@@ -97,17 +95,37 @@ export class UserService implements IUser {
   }
 
   async update(body: UpdateUserDTO, name: string, req: CustomRequest) {
-    const user = await this.userRepo.findOneBy({ name });
+    let user = await this.userRepo.findOneBy({ name });
     if (!this.userProvider.hasPermission(user, req))
       throw new ForbiddenException(
         'User does not meet the required permissions.',
       );
     const properties = this.userProvider.nonNullProperties(body);
-    if (properties.includes('pass')) {
-      user.pass = await this.userProvider.passHash(body.pass);
-    }
+
+    // ! Melhorar logica para o caso seja inserido a senha e random = true
+    // if (properties.includes('random_pass')) {
+    //   const pass = this.userProvider.genRandomString(12, [0.7, 0.2, 0.1]);
+    //   user.pass = await this.userProvider.passHash(pass);
+    // }
+    // if (properties.includes('pass')) {
+    //   user.pass = await this.userProvider.passHash(body.pass);
+    // }
+    let pass = null;
+    [user, pass] = await this.userProvider.changeProperties(
+      properties,
+      user,
+      body,
+      body.random_pass,
+    );
     await this.userRepo.save(user);
     // ! Testar mensagem de retorno
-    return this.userProvider.outMessage(UserProps.update, { properties });
+    if (!body.random_pass) {
+      return this.userProvider.outMessage(UserProps.update, { properties });
+    } else {
+      return this.userProvider.outMessage(UserProps.update_w_random, {
+        properties,
+        pass: pass,
+      });
+    }
   }
 }
