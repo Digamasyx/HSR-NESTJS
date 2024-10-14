@@ -6,6 +6,7 @@ export class UserDTO {
   name: string;
   pass?: string;
 
+  random_pass?: boolean = false;
   log?: boolean = false;
 }
 export class UpdateUserDTO extends OmitType(PartialType(UserDTO), [
