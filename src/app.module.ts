@@ -4,8 +4,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { DatabseModule } from './databse/databse.module';
+import { DatabseModule } from './database/database.module';
 import { CharModule } from './char/char.module';
+import { TalentModule } from './talent/talent.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CharModule } from './char/char.module';
     UserModule,
     DatabseModule,
     CharModule,
+    TalentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
