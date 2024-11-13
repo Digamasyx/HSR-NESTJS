@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Effect } from '../enums/talent.enum';
 import { Char } from 'src/char/entity/char.entity';
+import { Stats } from '../types/talent.types';
 
 @Entity()
 export class Talent {
@@ -29,4 +30,3 @@ export class Talent {
   @ManyToOne(() => Char, (char) => char.talent)
   char: Char;
 }
-type Stats = 'atk' | 'hp' | 'def' | 'spd';
