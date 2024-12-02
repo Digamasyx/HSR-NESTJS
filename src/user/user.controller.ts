@@ -16,8 +16,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdateUserDTO, UserDTO } from './dto/user.dto';
 import { Access } from 'src/roles/roles.decorators';
 import { AccessLevel } from 'src/roles/roles.enum';
-import { CustomRequest } from './interface/user.interface';
 import { IUser } from './interface/user.interface';
+import { CustomRequest } from 'src/globals/interface/global.interface';
 
 @Controller('user')
 export class UserController implements IUser {

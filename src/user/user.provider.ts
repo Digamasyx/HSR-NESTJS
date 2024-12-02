@@ -13,7 +13,7 @@ import {
   DeleteArg,
   UpdateArg,
 } from './types/user.type';
-import { CustomRequest } from './interface/user.interface';
+import { CustomRequest } from 'src/globals/interface/global.interface';
 
 @Injectable()
 export class UserProvider {
