@@ -10,7 +10,8 @@ import { Repository } from 'typeorm';
 import { UpdateUserDTO, UserDTO } from './dto/user.dto';
 import { UserProvider } from './user.provider';
 import { UserProps } from './types/user.enum';
-import { CustomRequest, IUser } from './interface/user.interface';
+import { IUser } from './interface/user.interface';
+import { CustomRequest } from 'src/globals/interface/global.interface';
 
 @Injectable()
 export class UserService implements IUser {
