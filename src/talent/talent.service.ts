@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Talent } from './entity/talent.entity';
 import { Repository } from 'typeorm';
 import { TalentDTO } from './dto/talent.dto';
-import { CustomRequest } from 'src/globals/interface/global.interface';
 import { Char } from 'src/char/entity/char.entity';
 
 @Injectable()
@@ -14,13 +13,13 @@ export class TalentService {
   ) {}
 
   // ! Testar
-  async create(body: TalentDTO, req: CustomRequest) {
-    const char = await this.charRepo.findOneBy({ name: req.user.name });
+  async create(body: TalentDTO, charName: string) {
+    const char = await this.charRepo.findOneBy({ name: charName });
     const talent = this.talentRepo.create(body);
     talent.char = char;
     await this.talentRepo.save(talent);
     return {
-      message: `Talent for "char": ${char.name}, was created.`,
+      message: `Talent for 'char': ${char.name}, was created.`,
     };
   }
 }
