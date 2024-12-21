@@ -25,7 +25,7 @@ describe('TalentService', () => {
     findOneBy: jest.fn(),
   };
 
-  beforeEach(async () => {
+  const createTestingModule = async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TalentService,
@@ -43,17 +43,21 @@ describe('TalentService', () => {
     service = module.get<TalentService>(TalentService);
     talentRepo = module.get(getRepositoryToken(Talent));
     charRepo = module.get(getRepositoryToken(Char));
+  };
+
+  beforeEach(async () => {
+    await createTestingModule();
   });
 
   describe('create (Positive Case)', () => {
+    const body: TalentDTO = {
+      effect: Effect.Buff,
+      stat: 'atk',
+      value: 12,
+      multiplicative: true,
+    };
+    const charName = 'Yunli';
     it('should create a talent', async () => {
-      const body: TalentDTO = {
-        effect: Effect.Buff,
-        stat: 'atk',
-        value: 12,
-        multiplicative: true,
-      };
-      const charName = 'Yunli';
       const char = new Char();
       char.name = charName;
 
@@ -72,15 +76,14 @@ describe('TalentService', () => {
     });
   });
   describe('create (Negative Cases)', () => {
+    const body: TalentDTO = {
+      effect: Effect.Buff,
+      stat: 'atk',
+      value: 12,
+      multiplicative: true,
+    };
+    const charName = 'lorem';
     it('should throw an error if character not found', async () => {
-      const body: TalentDTO = {
-        effect: Effect.Buff,
-        stat: 'atk',
-        value: 12,
-        multiplicative: true,
-      };
-      const charName = 'lorem';
-
       charRepo.findOneBy.mockResolvedValue(null);
       await expect(service.create(body, charName)).rejects.toThrow(
         BadRequestException,
@@ -122,9 +125,10 @@ describe('TalentService', () => {
 
       talentRepo.findOneBy.mockResolvedValue(null);
 
-      await expect(service.find(talentId)).rejects.toThrow(BadRequestException);
       await expect(service.find(talentId)).rejects.toThrow(
-        `Talent with specified Id: ${talentId} was not found.`,
+        new BadRequestException(
+          `Talent with specified Id: ${talentId} was not found.`,
+        ),
       );
     });
     it('should throw an error if no talent is foun by charName', async () => {
@@ -132,9 +136,10 @@ describe('TalentService', () => {
 
       talentRepo.findBy.mockResolvedValue(null);
 
-      await expect(service.find(charName)).rejects.toThrow(BadRequestException);
       await expect(service.find(charName)).rejects.toThrow(
-        `Talent with associated Char: ${charName} was not found.`,
+        new BadRequestException(
+          `Talent with associated Char: ${charName} was not found.`,
+        ),
       );
     });
   });
@@ -145,10 +150,7 @@ describe('TalentService', () => {
       talentRepo.findBy.mockResolvedValue(null);
 
       await expect(service.find(emptyName)).rejects.toThrow(
-        BadRequestException,
-      );
-      await expect(service.find(emptyName)).rejects.toThrow(
-        'Empty char name was inserted.',
+        new BadRequestException('Empty char name was inserted.'),
       );
     });
     it('should throw an error if a negative number is passed as ID', async () => {
@@ -157,10 +159,7 @@ describe('TalentService', () => {
       talentRepo.findOneBy.mockResolvedValue(null);
 
       await expect(service.find(negativeId)).rejects.toThrow(
-        BadRequestException,
-      );
-      await expect(service.find(negativeId)).rejects.toThrow(
-        'Only positive ID values can be inserted.',
+        new BadRequestException('Only positive ID values can be inserted.'),
       );
     });
   });
