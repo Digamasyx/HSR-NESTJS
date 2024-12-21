@@ -12,9 +12,13 @@ export class TalentService {
     @InjectRepository(Char) private readonly charRepo: Repository<Char>,
   ) {}
 
-  // ! Testar
+  // * Teoricamente tá Ok 👌
   async create(body: TalentDTO, charName: string) {
     const char = await this.charRepo.findOneBy({ name: charName });
+    if (!char)
+      throw new BadRequestException(
+        `Char with name: ${charName} was not found.`,
+      );
     const talent = this.talentRepo.create(body);
     talent.char = char;
     await this.talentRepo.save(talent);
@@ -22,13 +26,19 @@ export class TalentService {
       message: `Talent for 'char': ${char.name}, was created.`,
     };
   }
-  // ! Testar
-  async find(id_or_char: number | string) {
-    let talent: Talent;
+  // ? Considero isso como ok 😐
+  async find<T extends number | string>(id_or_char: T) {
+    let talent: Talent | Talent[];
     if (typeof id_or_char === 'number') {
+      if (id_or_char < 1)
+        throw new BadRequestException(
+          'Only positive ID values can be inserted.',
+        );
       talent = await this.talentRepo.findOneBy({ talent_id: id_or_char });
     } else {
-      talent = await this.talentRepo.findOneBy({ char: { name: id_or_char } });
+      if (id_or_char.length === 0)
+        throw new BadRequestException('Empty char name was inserted.');
+      talent = await this.talentRepo.findBy({ char: { name: id_or_char } });
     }
     if (!talent)
       throw new BadRequestException(
