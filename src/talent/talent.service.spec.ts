@@ -7,6 +7,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { TalentDTO } from './dto/talent.dto';
 import { Effect } from './enums/talent.enum';
 import { BadRequestException } from '@nestjs/common';
+import { TalentProvider } from './talent.provider';
 
 describe('TalentService', () => {
   let service: TalentService;
@@ -29,6 +30,7 @@ describe('TalentService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TalentService,
+        TalentProvider,
         {
           provide: getRepositoryToken(Talent),
           useValue: mockTalentRepo,
@@ -75,6 +77,7 @@ describe('TalentService', () => {
       expect(talentRepo.save).toHaveBeenCalled();
     });
   });
+
   describe('create (Negative Cases)', () => {
     const body: TalentDTO = {
       effect: Effect.Buff,
@@ -89,6 +92,65 @@ describe('TalentService', () => {
         BadRequestException,
       );
       expect(charRepo.findOneBy).toHaveBeenCalledWith({ name: charName });
+    });
+    it('should throw an error if the stat is wrong', async () => {
+      const stats = [
+        'atk',
+        'hp',
+        'def',
+        'spd',
+        'break_effect',
+        'crit_dmg',
+        'crit_rate',
+        'effect_hit_rate',
+        'effect_res',
+        'energy_regen',
+        'physical_dmg_bonus',
+        'fire_dmg_bonus',
+        'ice_dmg_bonus',
+        'wind_dmg_bonus',
+        'lightning_dmg_bonus',
+        'quantum_dmg_bonus',
+        'imaginary_dmg_bonus',
+      ];
+      // @ts-expect-error: Test case
+      body.stat = '.';
+      const char = new Char();
+      char.name = 'lorem';
+      charRepo.findOneBy.mockResolvedValue(char);
+
+      await expect(service.create(body, charName)).rejects.toThrow(
+        new BadRequestException(
+          `Wrong Stat type inserted.\nWas expected: '${stats.join(', ')}'.\nWas Recieved: ${body.stat}.`,
+        ),
+      );
+      expect(charRepo.findOneBy).toHaveBeenCalledWith({ name: charName });
+    });
+  });
+
+  describe('create (Edge Cases)', () => {
+    const body: TalentDTO = {
+      effect: Effect.Buff,
+      stat: 'atk',
+      value: -1,
+      multiplicative: true,
+    };
+    const char = new Char();
+    char.name = 'lorem';
+    it('should throw an error if talent value is negative', async () => {
+      charRepo.findOneBy.mockResolvedValue(char);
+      await expect(service.create(body, char.name)).rejects.toThrow(
+        new BadRequestException(`Value inserted can't be negative.`),
+      );
+      expect(charRepo.findOneBy).toHaveBeenCalledWith({ name: char.name });
+    });
+    it('shold throw an error if talent value is too big', async () => {
+      body.value = 51;
+      charRepo.findOneBy.mockResolvedValue(char);
+      await expect(service.create(body, char.name)).rejects.toThrow(
+        new BadRequestException(`Value inserted can't be too big.`),
+      );
+      expect(charRepo.findOneBy).toHaveBeenCalledWith({ name: char.name });
     });
   });
 
