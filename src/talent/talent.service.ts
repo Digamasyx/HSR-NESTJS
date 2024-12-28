@@ -4,12 +4,14 @@ import { Talent } from './entity/talent.entity';
 import { Repository } from 'typeorm';
 import { TalentDTO } from './dto/talent.dto';
 import { Char } from 'src/char/entity/char.entity';
+import { TalentProvider } from './talent.provider';
 
 @Injectable()
 export class TalentService {
   constructor(
     @InjectRepository(Talent) private talentRepo: Repository<Talent>,
     @InjectRepository(Char) private readonly charRepo: Repository<Char>,
+    private talentProvider: TalentProvider,
   ) {}
 
   // * Teoricamente tá Ok 👌
@@ -19,6 +21,7 @@ export class TalentService {
       throw new BadRequestException(
         `Char with name: ${charName} was not found.`,
       );
+    this.talentProvider.checkBody(body);
     const talent = this.talentRepo.create(body);
     talent.char = char;
     await this.talentRepo.save(talent);
