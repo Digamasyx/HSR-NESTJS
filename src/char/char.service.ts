@@ -14,13 +14,19 @@ export class CharService implements IChar {
   ) {}
 
   async create(body: CharDTO) {
-    // ! Testar
+    // ! Testar depois com o validationPipe
     body.asc = (() =>
       typeof body.asc === 'undefined'
         ? this.charProvider.defineAsc(body.level)
         : body.asc)();
     for (const i of ['hp', 'atk', 'def']) {
       body[i] = this.charProvider.jsonArrayToString(body[i]) as string;
+    }
+    const charExists = await this.charRepo.findOneBy({ name: body.name });
+    if (charExists) {
+      throw new BadRequestException(
+        `Duplicated char with name: ${body.name} was inserted.`,
+      );
     }
     const char = this.charRepo.create(body as any);
     await this.charRepo.insert(char);
@@ -30,6 +36,8 @@ export class CharService implements IChar {
   }
 
   async find(name: string) {
+    if (name.length <= 0)
+      throw new BadRequestException("The name field can't be empty.");
     const char = await this.charRepo.findOneBy({ name });
     if (!char)
       throw new BadRequestException(
@@ -51,6 +59,7 @@ export class CharService implements IChar {
   // ! Testar
   async update(body: UpdateCharDTO, name: string) {
     let char = (await this.charRepo.findOneBy({ name })) as any;
+    if (!char) throw new BadRequestException();
 
     const properties = this.charProvider.nonNullProperties(body);
 
@@ -59,8 +68,6 @@ export class CharService implements IChar {
         char[val] = this.charProvider.stringToJsonArray(char[val]);
       }
     });
-
-    if (!char) throw new BadRequestException();
 
     char = this.charProvider.changeProperties(properties, char, body);
 
