@@ -36,3 +36,4 @@ lerna-debug.log*
 # User defined
 src/database/constants.ts
 notas.md
+.env
