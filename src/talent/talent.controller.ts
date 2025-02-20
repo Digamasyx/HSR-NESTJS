@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   Param,
   Post,
   UseGuards,
@@ -25,5 +27,19 @@ export class TalentController {
     @Param('charName') char: string,
   ) {
     return this.talentService.create(body, char);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Access(AccessLevel.ADMIN)
+  @Get(':charNameId')
+  find(@Param('charNameId') char: string | number) {
+    return this.talentService.find(char);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Access(AccessLevel.ADMIN)
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.talentService.remove(id);
   }
 }
