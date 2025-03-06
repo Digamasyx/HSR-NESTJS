@@ -5,9 +5,10 @@ import { Repository } from 'typeorm';
 import { TalentDTO } from './dto/talent.dto';
 import { Char } from 'src/char/entity/char.entity';
 import { TalentProvider } from './talent.provider';
+import { ITalent } from './interface/talent.interface';
 
 @Injectable()
-export class TalentService {
+export class TalentService implements ITalent {
   constructor(
     @InjectRepository(Talent) private talentRepo: Repository<Talent>,
     @InjectRepository(Char) private readonly charRepo: Repository<Char>,
@@ -30,9 +31,10 @@ export class TalentService {
     };
   }
   // ? Considero isso como ok 😐
-  async find<T extends number | string>(id_or_char: T) {
+  async find(id_or_char: string | number) {
     let talent: Talent | Talent[];
-    if (typeof id_or_char === 'number') {
+    if (this.talentProvider.isTrueNumber(id_or_char)) {
+      id_or_char = Number(id_or_char);
       if (id_or_char < 1)
         throw new BadRequestException(
           'Only positive ID values can be inserted.',
@@ -58,5 +60,24 @@ export class TalentService {
     return {
       message: `The talent associated with the Char: ${talent.char.name} was removed.`,
     };
+  }
+
+  // ! Testar
+  async removeAll(charName: string) {
+    const char = await this.charRepo.findOneBy({ name: charName });
+    if (!char)
+      throw new BadRequestException(
+        `Char with name: ${charName} does not exists.`,
+      );
+    if (!char.talent)
+      throw new BadRequestException(
+        `This char does not have any talent assigned.`,
+      );
+    delete char.talent;
+
+    await this.charRepo.save(char);
+
+    return { message: `All talents from char: ${charName}, were removed.` };
+    
   }
 }

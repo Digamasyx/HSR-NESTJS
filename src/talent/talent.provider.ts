@@ -40,4 +40,7 @@ export class TalentProvider {
 
     return isStats(arg.stat) && isValidValue(arg.value);
   }
+  isTrueNumber(arg: any): arg is number {
+    return /^[0-9]+$/.test(arg);
+  }
 }
