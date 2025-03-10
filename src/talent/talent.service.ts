@@ -34,6 +34,7 @@ export class TalentService implements ITalent {
   async find(id_or_char: string | number) {
     let talent: Talent | Talent[];
     if (this.talentProvider.isTrueNumber(id_or_char)) {
+      
       id_or_char = Number(id_or_char);
       if (id_or_char < 1)
         throw new BadRequestException(
