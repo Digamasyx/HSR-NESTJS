@@ -26,4 +26,10 @@ export class User {
     default: AccessLevel.USER,
   })
   access_level: AccessLevel;
+
+  @Column({ default: null, nullable: true, length: 410, select: false })
+  twoFacSecret: string
+
+  @Column({ default: false, type: 'bool' })
+  is2FAActivated: boolean
 }
