@@ -10,7 +10,7 @@ import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AuthDTO } from './dto/auth.dto';
 import { authenticator } from 'otplib';
-import { toDataURL } from 'qrcode'
+import { toDataURL } from 'qrcode';
 import { AuthProvider } from './auth.provider';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class AuthService {
 
   async signIn(arg: AuthDTO): Promise<{ token: string }> {
     const user = await this.userRepo.findOneBy({ name: arg.name });
-    await this.authProvider.checkIfExistsAndCompare(arg, user.pass)
+    await this.authProvider.checkIfExistsAndCompare(arg, user.pass);
     const payload = {
       name: user.name,
       uuid: user.user_uuid,
@@ -41,29 +41,31 @@ export class AuthService {
     const user = await this.userRepo.findOneBy({ name: arg.name });
 
     if (!user.is2FAActivated)
-      throw new UnauthorizedException('Two-factor authentication is deactivated for this user.')
+      throw new UnauthorizedException(
+        'Two-factor authentication is deactivated for this user.',
+      );
 
-    await this.authProvider.checkIfExistsAndCompare(arg, user.pass)
+    await this.authProvider.checkIfExistsAndCompare(arg, user.pass);
 
     authenticator.options = {
-      algorithm: HashAlgorithms.SHA256
-    }
+      algorithm: HashAlgorithms.SHA256,
+    };
     const secret = authenticator.generateSecret(256);
-    
-    const otpAuthUrl = authenticator.keyuri(user.name, 'Hsr-Nest', secret)
+
+    const otpAuthUrl = authenticator.keyuri(user.name, 'Hsr-Nest', secret);
 
     user.twoFacSecret = secret;
     await this.userRepo.save(user);
 
     return {
       token: secret,
-      url: otpAuthUrl
-    }
+      url: otpAuthUrl,
+    };
   }
 
   // * Converte imagem para URI
   async generateQRDataUrl(otpAuthUrl: string) {
-    return toDataURL(otpAuthUrl)
+    return toDataURL(otpAuthUrl);
   }
 
   // * Se { User.is2FAActivated == true } retornará o oposto
@@ -79,48 +81,53 @@ export class AuthService {
     await this.userRepo.save(user);
 
     return {
-      message: `Two-Factor authentication was turned ${user.is2FAActivated ? 'on' : 'off'}.`
-    }
+      message: `Two-Factor authentication was turned ${user.is2FAActivated ? 'on' : 'off'}.`,
+    };
   }
 
   async is2FACodeValid(twoFactorCode: string, user: User) {
-
     return authenticator.verify({
       token: twoFactorCode,
       secret: user.twoFacSecret,
-    })
+    });
   }
 
   async loginW2FA(userName: string, code: string) {
-    const user = await this.userRepo.findOneBy({ name: userName })
-    user.twoFacSecret = await (await this.userRepo.findOne({ where: { name: userName }, select: { twoFacSecret: true } })).twoFacSecret
-    
-    if (!user.is2FAActivated) 
-      throw new UnauthorizedException(`Two-factor authentication is not activated for this user.`)
+    const user = await this.userRepo.findOneBy({ name: userName });
+    user.twoFacSecret = await (
+      await this.userRepo.findOne({
+        where: { name: userName },
+        select: { twoFacSecret: true },
+      })
+    ).twoFacSecret;
+
+    if (!user.is2FAActivated)
+      throw new UnauthorizedException(
+        `Two-factor authentication is not activated for this user.`,
+      );
 
     const isValid = await this.is2FACodeValid(code, user);
 
-    if (!isValid)
-      throw new UnauthorizedException('Invalid code inserted')
+    if (!isValid) throw new UnauthorizedException('Invalid code inserted');
 
     const payload = {
       name: userName,
       uuid: user.user_uuid,
       access_level: user.access_level,
       isTwoFactorAuthenticated: true,
-      isTwoFactorAuthenticationEnabled: user.is2FAActivated
-    }
+      isTwoFactorAuthenticationEnabled: user.is2FAActivated,
+    };
 
     return {
       token: await this.jwtService.signAsync(payload, {
-        secret: process.env.ACCESS_TOKEN
-      })
-    }
+        secret: process.env.ACCESS_TOKEN,
+      }),
+    };
   }
 }
 
 enum HashAlgorithms {
-  'SHA1' = "sha1",
-  'SHA256' = "sha256",
-  'SHA512' = "sha512"
+  'SHA1' = 'sha1',
+  'SHA256' = 'sha256',
+  'SHA512' = 'sha512',
 }

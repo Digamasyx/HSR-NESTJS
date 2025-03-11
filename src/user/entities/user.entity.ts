@@ -28,8 +28,8 @@ export class User {
   access_level: AccessLevel;
 
   @Column({ default: null, nullable: true, length: 410, select: false })
-  twoFacSecret: string
+  twoFacSecret: string;
 
   @Column({ default: false, type: 'bool' })
-  is2FAActivated: boolean
+  is2FAActivated: boolean;
 }

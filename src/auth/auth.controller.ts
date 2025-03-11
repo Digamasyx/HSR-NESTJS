@@ -15,20 +15,20 @@ export class AuthController {
   @Post('turn-2fa')
   @UseFilters(AuthExceptionFilter)
   turn2FA(@Body() authDTO: AuthDTO) {
-    return this.authService.turn2FA(authDTO)
+    return this.authService.turn2FA(authDTO);
   }
   @Post('gen-2fa')
   @UseFilters(AuthExceptionFilter)
   gen2FASecret(@Body() authDTO: AuthDTO) {
-    return this.authService.gen2FASecret(authDTO)
+    return this.authService.gen2FASecret(authDTO);
   }
   @Post('login-2fa/:name/:code')
   @UseFilters(AuthExceptionFilter)
   loginW2FA(@Param('name') name: string, @Param('code') code: string) {
-    return this.authService.loginW2FA(name, code)
+    return this.authService.loginW2FA(name, code);
   }
   @Post('gen-qruri')
   generateQRDataUrl(@Body() url: { url: string }) {
-    return this.authService.generateQRDataUrl(url.url)
+    return this.authService.generateQRDataUrl(url.url);
   }
 }

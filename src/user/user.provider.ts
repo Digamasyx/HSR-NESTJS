@@ -42,6 +42,7 @@ export class UserProvider {
   // ! adicionar campo perguntando se deseja adicionar senha aleatoria
   genRandomString(size: number, weights?: number[]) {
     let weightSum = 0;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     weights
       ? (weightSum = Math.round(
           weights.reduce((acc, weights) => acc + weights, 0),
