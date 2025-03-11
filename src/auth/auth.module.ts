@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
 import { AuthProvider } from './auth.provider';
+import { UserSharedModule } from 'src/globals/module/sharedEntity.module';
 
 @Module({
   imports: [
@@ -13,7 +12,7 @@ import { AuthProvider } from './auth.provider';
       secret: process.env.ACCESS_TOKEN,
       signOptions: { expiresIn: '1h' },
     }),
-    TypeOrmModule.forFeature([User]),
+    UserSharedModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthProvider],

@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TalentController } from './talent.controller';
 import { TalentService } from './talent.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Talent } from './entity/talent.entity';
-import { Char } from 'src/char/entity/char.entity';
 import { TalentProvider } from './talent.provider';
+import { CharSharedModule, TalentSharedModule } from 'src/globals/module/sharedEntity.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Talent, Char])],
+  imports: [TalentSharedModule, CharSharedModule],
   controllers: [TalentController],
   providers: [TalentService, TalentProvider],
 })

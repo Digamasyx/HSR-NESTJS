@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CharController } from './char.controller';
 import { CharService } from './char.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Char } from './entity/char.entity';
 import { CharProvider } from './char.provider';
+import { CharSharedModule } from 'src/globals/module/sharedEntity.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Char])],
+  imports: [CharSharedModule],
   controllers: [CharController],
   providers: [CharService, CharProvider],
 })

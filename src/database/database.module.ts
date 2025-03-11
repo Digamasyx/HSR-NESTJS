@@ -11,7 +11,7 @@ import { MAGIC_WORDS } from './constants';
       username: MAGIC_WORDS.USERNAME,
       password: MAGIC_WORDS.PASSWORD,
       database: MAGIC_WORDS.DB_NAME,
-      entities: [__dirname + '/../**/*.entity{.ts,js}'],
+      entities: [__dirname + '/../**/*.entity.{ts,js}'],
       synchronize: true, //! Não usar em prod
     }),
   ],
