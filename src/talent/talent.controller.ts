@@ -42,4 +42,11 @@ export class TalentController {
   remove(@Param('id') id: number) {
     return this.talentService.remove(id);
   }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Access(AccessLevel.ADMIN)
+  @Delete(':charName')
+  removeAll(@Param('charName') charName: string) {
+    return this.talentService.removeAll(charName);
+  }
 }
