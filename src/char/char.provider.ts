@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { LevelRange, MappedStat } from './types/char.types';
 import { CharDTO } from './dto/char.dto';
+import { Paths, Types } from './enums/char.enum';
 
 @Injectable()
 export class CharProvider {
@@ -56,6 +57,7 @@ export class CharProvider {
     }
     return curr;
   }
+
   jsonArrayToString(value: MappedStat[]): string {
     let jsonArr = '[';
     for (let i = 0; i < value.length; i++) {
@@ -67,7 +69,16 @@ export class CharProvider {
     jsonArr += ']';
     return jsonArr;
   }
+
   stringToJsonArray(value: string): MappedStat[] {
     return JSON.parse(value) as MappedStat[];
+  }
+
+  isPaths(value: any): value is Paths {
+    return Object.values(Paths).includes(value);
+  }
+
+  isTypes(value: any): value is Types {
+    return Object.values(Types).includes(value);
   }
 }
