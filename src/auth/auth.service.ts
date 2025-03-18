@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
@@ -94,7 +89,7 @@ export class AuthService {
 
   async loginW2FA(userName: string, code: string) {
     const user = await this.userRepo.findOneBy({ name: userName });
-    user.twoFacSecret = await (
+    user.twoFacSecret = (
       await this.userRepo.findOne({
         where: { name: userName },
         select: { twoFacSecret: true },
