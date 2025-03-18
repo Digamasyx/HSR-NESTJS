@@ -16,6 +16,8 @@ import { RolesGuard } from 'src/roles/roles.guard';
 import { CharDTO, UpdateCharDTO } from './dto/char.dto';
 import { CharService } from './char.service';
 import { IChar } from './interface/char.interface';
+import { Paths, Types } from './enums/char.enum';
+import { ValidateStringEnumPipe } from './pipes/string-enum.pipe';
 
 @Controller('char')
 export class CharController implements IChar {
@@ -29,7 +31,7 @@ export class CharController implements IChar {
   }
 
   @Get(':name')
-  find(@Param('name') name: string) {
+  find(@Param('name', ValidateStringEnumPipe) name: string | Paths | Types) {
     return this.charService.find(name);
   }
 
