@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Char } from './entity/char.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CharProvider } from './char.provider';
+import { Paths, Types } from './enums/char.enum';
 
 @Injectable()
 export class CharService implements IChar {
@@ -35,10 +36,19 @@ export class CharService implements IChar {
     };
   }
 
-  async find(name: string) {
-    if (name.length <= 0)
+  async find(arg: string): Promise<Char>;
+  async find(arg: Paths | Types): Promise<Char[]>;
+  async find(arg: string | Paths | Types): Promise<Char | Char[]> {
+    let char: Promise<Char> | Promise<Char[]>;
+    if (arg.length <= 0)
       throw new BadRequestException("The name field can't be empty.");
-    const char = await this.charRepo.findOneBy({ name });
+
+    if (this.charProvider.isPaths(arg))
+      char = this.charRepo.findBy({ path: arg });
+    else if (this.charProvider.isTypes(arg))
+      char = this.charRepo.findBy({ type: arg });
+    else char = this.charRepo.findOneBy({ name: arg });
+
     if (!char)
       throw new BadRequestException(
         `The char with specified name: ${name} does not exists.`,
