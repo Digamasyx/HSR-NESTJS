@@ -42,9 +42,6 @@ export class AuthService {
 
     await this.authProvider.checkIfExistsAndCompare(arg, user.pass);
 
-    authenticator.options = {
-      algorithm: HashAlgorithms.SHA256,
-    };
     const secret = authenticator.generateSecret(256);
 
     const otpAuthUrl = authenticator.keyuri(user.name, 'Hsr-Nest', secret);
@@ -119,10 +116,4 @@ export class AuthService {
       }),
     };
   }
-}
-
-enum HashAlgorithms {
-  'SHA1' = 'sha1',
-  'SHA256' = 'sha256',
-  'SHA512' = 'sha512',
 }
