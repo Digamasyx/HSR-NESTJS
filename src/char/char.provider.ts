@@ -38,6 +38,9 @@ export class CharProvider {
     next: Partial<CharDTO>,
   ) {
     for (const i of idx) {
+      if (!Array.isArray(curr[i])) {
+        curr[i] = [] as never;
+      }
       switch (i) {
         case 'atk':
         case 'def':
@@ -49,6 +52,8 @@ export class CharProvider {
               );
               if (currentStatIdx !== -1) {
                 curr[i][currentStatIdx].value = nextStat.value;
+              } else {
+                curr[i].push(nextStat);
               }
             });
           }
@@ -71,7 +76,11 @@ export class CharProvider {
   }
 
   stringToJsonArray(value: string): MappedStat[] {
-    return JSON.parse(value) as MappedStat[];
+    try {
+      return JSON.parse(value) as MappedStat[];
+    } catch {
+      return [] as MappedStat[];
+    }
   }
 
   isPaths(value: any): value is Paths {
