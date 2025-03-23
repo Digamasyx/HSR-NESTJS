@@ -47,7 +47,11 @@ export class CharService implements IChar {
       char = this.charRepo.findBy({ path: arg });
     else if (this.charProvider.isTypes(arg))
       char = this.charRepo.findBy({ type: arg });
-    else char = this.charRepo.findOneBy({ name: arg });
+    else
+      char = this.charRepo.findOne({
+        where: { name: arg },
+        relations: { talent: true, files: true },
+      });
 
     if (!char)
       throw new BadRequestException(

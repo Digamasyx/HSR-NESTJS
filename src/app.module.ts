@@ -10,6 +10,7 @@ import { TalentModule } from './talent/talent.module';
 import { CustomLogger } from './globals/services/custom-logger.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './globals/interceptors/logging.interceptor';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LoggingInterceptor } from './globals/interceptors/logging.interceptor';
     DatabseModule,
     CharModule,
     TalentModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [
