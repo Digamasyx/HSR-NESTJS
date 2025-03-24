@@ -5,7 +5,7 @@ import { TalentProvider } from './talent.provider';
 import {
   CharSharedModule,
   TalentSharedModule,
-} from 'src/globals/module/sharedEntity.module';
+} from '@globals/module/sharedEntity.module';
 
 @Module({
   imports: [TalentSharedModule, CharSharedModule],

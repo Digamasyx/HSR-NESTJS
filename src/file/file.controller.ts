@@ -8,12 +8,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerConfig } from 'src/globals/config/multer.config';
+import { multerConfig } from '@globals/config/multer.config';
 import { FileService } from './file.service';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { Access } from 'src/roles/roles.decorators';
-import { AccessLevel } from 'src/roles/roles.enum';
+import { AuthGuard } from '@auth/auth.guard';
+import { RolesGuard } from '@roles/roles.guard';
+import { Access } from '@roles/roles.decorators';
+import { AccessLevel } from '@roles/roles.enum';
 
 @Controller('file')
 export class FileController {

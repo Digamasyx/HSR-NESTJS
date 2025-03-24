@@ -1,4 +1,4 @@
-import { AccessLevel } from 'src/roles/roles.enum';
+import { AccessLevel } from '@roles/roles.enum';
 import {
   Column,
   CreateDateColumn,

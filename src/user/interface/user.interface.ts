@@ -1,6 +1,6 @@
-import { User } from 'src/user/entity/user.entity';
+import { User } from '@user/entity/user.entity';
 import { UpdateUserDTO, UserDTO } from '../dto/user.dto';
-import { CustomRequest } from 'src/globals/interface/global.interface';
+import { CustomRequest } from '@globals/interface/global.interface';
 
 export interface IUser {
   find(name: string, req: CustomRequest): Promise<User>;

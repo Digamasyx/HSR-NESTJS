@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Paths, Types } from '../enums/char.enum';
-import { Talent } from 'src/talent/entity/talent.entity';
+import { Talent } from '@talent/entity/talent.entity';
 import { LevelRange } from '../types/char.types';
-import { Files } from 'src/file/entity/file.entity';
+import { Files } from '@file/entity/file.entity';
 
 @Entity()
 export class Char {

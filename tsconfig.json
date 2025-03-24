@@ -16,6 +16,16 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@auth/*": ["./src/auth/*"],
+      "@char/*": ["./src/char/*"],
+      "@database/*": ["./src/database/*"],
+      "@file/*": ["./src/file/*"],
+      "@globals/*": ["./src/globals/*"],
+      "@roles/*": ["./src/roles/*"],
+      "@talent/*": ["./src/talent/*"],
+      "@user/*": ["./src/user/*"]
+    }
   }
 }

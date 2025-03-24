@@ -4,7 +4,7 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 import { hash } from 'bcrypt';
-import { AccessLevel } from 'src/roles/roles.enum';
+import { AccessLevel } from '@roles/roles.enum';
 import { UserProps } from './types/user.enum';
 import {
   ArgType,
@@ -13,7 +13,7 @@ import {
   DeleteArg,
   UpdateArg,
 } from './types/user.type';
-import { CustomRequest } from 'src/globals/interface/global.interface';
+import { CustomRequest } from '@globals/interface/global.interface';
 
 @Injectable()
 export class UserProvider {

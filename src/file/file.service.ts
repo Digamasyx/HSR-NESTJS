@@ -6,8 +6,8 @@ import {
 import { Repository } from 'typeorm';
 import { Files } from './entity/file.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Char } from 'src/char/entity/char.entity';
-import { CustomRequest } from 'src/globals/interface/global.interface';
+import { Char } from '@char/entity/char.entity';
+import { CustomRequest } from '@globals/interface/global.interface';
 
 @Injectable()
 export class FileService {

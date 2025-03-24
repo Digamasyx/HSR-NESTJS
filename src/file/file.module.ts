@@ -3,7 +3,7 @@ import { FileService } from './file.service';
 import {
   CharSharedModule,
   FilesSharedModule,
-} from 'src/globals/module/sharedEntity.module';
+} from '@globals/module/sharedEntity.module';
 import { FileController } from './file.controller';
 
 @Module({

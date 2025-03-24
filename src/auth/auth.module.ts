@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthProvider } from './auth.provider';
-import { UserSharedModule } from 'src/globals/module/sharedEntity.module';
+import { UserSharedModule } from '@globals/module/sharedEntity.module';
 
 @Module({
   imports: [

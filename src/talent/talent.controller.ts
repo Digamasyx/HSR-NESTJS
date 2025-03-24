@@ -9,10 +9,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { TalentService } from './talent.service';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { Access } from 'src/roles/roles.decorators';
-import { AccessLevel } from 'src/roles/roles.enum';
+import { AuthGuard } from '@auth/auth.guard';
+import { RolesGuard } from '@roles/roles.guard';
+import { Access } from '@roles/roles.decorators';
+import { AccessLevel } from '@roles/roles.enum';
 import { TalentDTO } from './dto/talent.dto';
 
 @Controller('talent')

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Talent } from './entity/talent.entity';
 import { Repository } from 'typeorm';
 import { TalentDTO } from './dto/talent.dto';
-import { Char } from 'src/char/entity/char.entity';
+import { Char } from '@char/entity/char.entity';
 import { TalentProvider } from './talent.provider';
 import { ITalent } from './interface/talent.interface';
 

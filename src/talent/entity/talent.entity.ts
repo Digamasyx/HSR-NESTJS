@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Effect } from '../enums/talent.enum';
-import { Char } from 'src/char/entity/char.entity';
+import { Char } from '@char/entity/char.entity';
 import { Stats } from '../types/talent.types';
 
 @Entity()

@@ -9,10 +9,10 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { Access } from 'src/roles/roles.decorators';
-import { AccessLevel } from 'src/roles/roles.enum';
-import { RolesGuard } from 'src/roles/roles.guard';
+import { AuthGuard } from '@auth/auth.guard';
+import { Access } from '@roles/roles.decorators';
+import { AccessLevel } from '@roles/roles.enum';
+import { RolesGuard } from '@roles/roles.guard';
 import { CharDTO, UpdateCharDTO } from './dto/char.dto';
 import { CharService } from './char.service';
 import { IChar } from './interface/char.interface';

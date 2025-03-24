@@ -11,13 +11,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from '@roles/roles.guard';
+import { AuthGuard } from '@auth/auth.guard';
 import { UpdateUserDTO, UserDTO } from './dto/user.dto';
-import { Access } from 'src/roles/roles.decorators';
-import { AccessLevel } from 'src/roles/roles.enum';
+import { Access } from '@roles/roles.decorators';
+import { AccessLevel } from '@roles/roles.enum';
 import { IUser } from './interface/user.interface';
-import { CustomRequest } from 'src/globals/interface/global.interface';
+import { CustomRequest } from '@globals/interface/global.interface';
 
 @Controller('user')
 export class UserController implements IUser {

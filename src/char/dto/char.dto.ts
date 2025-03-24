@@ -8,7 +8,7 @@ import {
 import { IsNumberArray } from '../validator/array.validator';
 import { Paths, Types } from '../enums/char.enum';
 import { PartialType } from '@nestjs/mapped-types';
-import { Talent } from 'src/talent/entity/talent.entity';
+import { Talent } from '@talent/entity/talent.entity';
 import { LevelRange, MappedStat } from '../types/char.types';
 
 export class CharDTO {

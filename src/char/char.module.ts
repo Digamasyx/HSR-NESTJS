@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { CharController } from './char.controller';
 import { CharService } from './char.service';
 import { CharProvider } from './char.provider';
-import { CharSharedModule } from 'src/globals/module/sharedEntity.module';
+import { CharSharedModule } from '@globals/module/sharedEntity.module';
 
 @Module({
   imports: [CharSharedModule],
