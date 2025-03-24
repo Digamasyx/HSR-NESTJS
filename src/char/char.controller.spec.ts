@@ -5,7 +5,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Char } from './entity/char.entity';
 import { CharDTO, UpdateCharDTO } from './dto/char.dto';
 import { Paths, Types } from './enums/char.enum';
-import { User } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import { DataSource } from 'typeorm';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/roles/roles.guard';

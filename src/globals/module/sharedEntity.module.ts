@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Char } from 'src/char/entity/char.entity';
 import { Files } from 'src/file/entity/file.entity';
 import { Talent } from 'src/talent/entity/talent.entity';
-import { User } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entity/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],

@@ -1,4 +1,4 @@
-import { User } from 'src/user/entities/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import { UpdateUserDTO, UserDTO } from '../dto/user.dto';
 import { CustomRequest } from 'src/globals/interface/global.interface';
 
