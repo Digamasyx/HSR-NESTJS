@@ -33,6 +33,9 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# IDE - VS
+.vs/*
+
 # User defined
 src/database/constants.ts
 notas.md
