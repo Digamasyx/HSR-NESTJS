@@ -43,19 +43,27 @@ export class CharService implements IChar {
     if (arg.length <= 0)
       throw new BadRequestException("The name field can't be empty.");
 
-    if (this.charProvider.isPaths(arg))
+    if (this.charProvider.isPaths(arg)) {
       char = this.charRepo.findBy({ path: arg });
-    else if (this.charProvider.isTypes(arg))
+      if (!(await char))
+        throw new BadRequestException(
+          `There are 0 chars for this path: ${arg}.`,
+        );
+    } else if (this.charProvider.isTypes(arg)) {
       char = this.charRepo.findBy({ type: arg });
-    else
+      if (!(await char))
+        throw new BadRequestException(
+          `There are 0 chars for this type: ${arg}.`,
+        );
+    } else
       char = this.charRepo.findOne({
         where: { name: arg },
         relations: { talent: true, files: true },
       });
 
-    if (!char)
+    if (!(await char))
       throw new BadRequestException(
-        `The char with specified name: ${name} does not exists.`,
+        `The char with specified name: ${arg} does not exists.`,
       );
     return char;
   }
