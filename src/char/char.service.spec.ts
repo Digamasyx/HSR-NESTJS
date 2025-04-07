@@ -15,6 +15,8 @@ describe('CharService', () => {
     create: jest.fn(),
     insert: jest.fn(),
     findOneBy: jest.fn(),
+    findBy: jest.fn(),
+    findOne: jest.fn(),
     remove: jest.fn(),
     save: jest.fn(),
   };
@@ -152,31 +154,44 @@ describe('CharService', () => {
   });
 
   describe('find (Positive case)', () => {
-    it('should find a Char successfully', async () => {
-      const charDTO: CharDTO = {
-        name: 'ExistingChar',
-        level: '10/80',
-        atk: [{ level: 10, value: 100 }],
-        def: [{ level: 10, value: 50 }],
-        hp: [{ level: 10, value: 500 }],
-        spd: 10,
-        path: Paths.Harmony,
-        type: Types.Fire,
-      };
-
-      mockCharRepo.findOneBy.mockResolvedValue(charDTO);
+    const charDTO: CharDTO = {
+      name: 'ExistingChar',
+      level: '10/80',
+      atk: [{ level: 10, value: 100 }],
+      def: [{ level: 10, value: 50 }],
+      hp: [{ level: 10, value: 500 }],
+      spd: 10,
+      path: Paths.Harmony,
+      type: Types.Fire,
+    };
+    it('should find a Char by name successfully', async () => {
+      mockCharRepo.findOne.mockResolvedValue(charDTO);
 
       const result = await service.find(charDTO.name);
       expect(result).toEqual(charDTO);
-      expect(mockCharRepo.findOneBy).toHaveBeenCalledWith({
-        name: charDTO.name,
+      expect(mockCharRepo.findOne).toHaveBeenCalledWith({
+        where: { name: charDTO.name },
+        relations: { talent: true, files: true },
       });
+    });
+    it('should find a Char by path successfully', async () => {
+      mockCharRepo.findBy.mockResolvedValue([charDTO]);
+
+      const result = await service.find(Paths.Harmony);
+      expect(result).toEqual([charDTO]);
+      expect(mockCharRepo.findBy).toHaveBeenCalledWith({ path: Paths.Harmony });
+    });
+    it('should find a Char by type successfully', async () => {
+      mockCharRepo.findBy.mockResolvedValue([charDTO]);
+      const result = await service.find(Types.Fire);
+      expect(result).toEqual([charDTO]);
+      expect(mockCharRepo.findBy).toHaveBeenCalledWith({ type: Types.Fire });
     });
   });
 
   describe('find (Negative cases)', () => {
     it('should throw and error if Char does not exists', async () => {
-      mockCharRepo.findOneBy.mockResolvedValue(null);
+      mockCharRepo.findOne.mockResolvedValue(null);
       await expect(service.find('Lorem')).rejects.toThrow(BadRequestException);
     });
     it('should throw an error if name is empty', async () => {
@@ -195,11 +210,12 @@ describe('CharService', () => {
         path: Paths.Harmony,
         type: Types.Fire,
       };
-      mockCharRepo.findOneBy.mockResolvedValue(charDTO as any);
+      mockCharRepo.findOne.mockResolvedValue(charDTO as any);
       const result = await service.find('Special@Char#Name!');
       expect(result).toEqual(charDTO);
-      expect(mockCharRepo.findOneBy).toHaveBeenCalledWith({
-        name: charDTO.name,
+      expect(mockCharRepo.findOne).toHaveBeenCalledWith({
+        where: { name: charDTO.name },
+        relations: { talent: true, files: true },
       });
     });
   });
