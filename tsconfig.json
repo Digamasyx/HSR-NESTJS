@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "NodeNext",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
@@ -14,9 +15,13 @@
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
     "strictBindCallApply": false,
+    "resolveJsonModule": true,
+    "moduleResolution": "nodenext",
+    "listEmittedFiles": true,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
+    "noFallthroughCasesInSwitch": true,
     "paths": {
       "@auth/*": ["./src/auth/*"],
       "@char/*": ["./src/char/*"],
