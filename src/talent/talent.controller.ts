@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  UseFilters,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -14,7 +15,9 @@ import { RolesGuard } from '@roles/roles.guard';
 import { Access } from '@roles/roles.decorators';
 import { AccessLevel } from '@roles/roles.enum';
 import { TalentDTO } from './dto/talent.dto';
+import { GlobalExceptionFilter } from '@globals/filter/globalException.filter';
 
+@UseFilters(GlobalExceptionFilter)
 @Controller('talent')
 export class TalentController {
   constructor(private readonly talentService: TalentService) {}
