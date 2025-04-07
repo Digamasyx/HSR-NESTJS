@@ -4,11 +4,11 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { AuthProvider } from './auth.provider';
+import { GlobalProvider } from '@globals/provider/global.provider';
 
 @Catch(HttpException)
-export class AuthExceptionFilter implements ExceptionFilter {
-  constructor(private authProvider: AuthProvider) {}
+export class GlobalExceptionFilter implements ExceptionFilter {
+  constructor(private globalProvider: GlobalProvider) {}
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
@@ -17,10 +17,11 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       exception: {
-        status: status,
+        status: exception['status'],
+        error_type: exception['response']['error'],
         message: exception['message'],
       },
-      timestamp: this.authProvider.formatDate(new Date(Date.now())),
+      timestamp: this.globalProvider.formatDate(new Date(Date.now())),
       path: request.url,
     });
   }
