@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Request as Req,
+  UseFilters,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -18,7 +19,9 @@ import { Access } from '@roles/roles.decorators';
 import { AccessLevel } from '@roles/roles.enum';
 import { IUser } from './interface/user.interface';
 import { CustomRequest } from '@globals/interface/global.interface';
+import { GlobalExceptionFilter } from '@globals/filter/globalException.filter';
 
+@UseFilters(GlobalExceptionFilter)
 @Controller('user')
 export class UserController implements IUser {
   constructor(private readonly userService: UserService) {}
