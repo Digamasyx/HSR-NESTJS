@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseFilters,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -18,8 +19,10 @@ import { CharService } from './char.service';
 import { IChar } from './interface/char.interface';
 import { Paths, Types } from './enums/char.enum';
 import { ValidateStringEnumPipe } from './pipes/string-enum.pipe';
+import { GlobalExceptionFilter } from '@globals/filter/globalException.filter';
 
 @Controller('char')
+@UseFilters(GlobalExceptionFilter)
 export class CharController implements IChar {
   constructor(private readonly charService: CharService) {}
 
