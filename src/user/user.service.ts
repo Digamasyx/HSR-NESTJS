@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,10 +23,11 @@ export class UserService implements IUser {
 
   async create(body: UserDTO, req: CustomRequest) {
     const isPassNotPresent = !body.pass;
-    let pass = null;
+    let pass: string = null;
     if (req.login_status === true)
-      throw new BadRequestException('You must be not logged.');
+      throw new BadRequestException("You can't be logged in.");
     if (isPassNotPresent)
+      // Generate a random password if the pass is not present
       pass = this.userProvider.genRandomString(12, [0.7, 0.2, 0.1]);
 
     body.pass = await this.userProvider.passHash(pass ?? body.pass);
@@ -53,34 +55,42 @@ export class UserService implements IUser {
         },
       });
       if (!user)
-        throw new BadRequestException(
-          `User with name: ${name} does not exists.`,
-        );
+        throw new NotFoundException(`User with name: ${name} does not exists.`);
       else return user;
     }
     const user = await this.userRepo.findOneBy({ name });
     if (!user)
-      throw new BadRequestException(
-        `User with name: '${name}' does not exists.`,
-      );
+      throw new NotFoundException(`User with name: '${name}' does not exists.`);
     return user;
   }
 
   async findAll(req: CustomRequest) {
     const userStatus = this.userProvider.userStatus(req);
     if (userStatus === 'not_logged' || userStatus === 'User') {
-      return await this.userRepo.find({
+      const users = await this.userRepo.find({
         select: {
           name: true,
           created_at: true,
         },
       });
+      if (users.length < 1) {
+        throw new NotFoundException('There are no users registered.');
+      }
+      return users;
     }
-    return await this.userRepo.find();
+    const users = await this.userRepo.find();
+    if (users.length < 1) {
+      throw new NotFoundException('There are no users registered.');
+    }
+    return users;
   }
 
   async delete(name: string, req: CustomRequest) {
     const user = await this.userRepo.findOneBy({ name });
+    if (!user)
+      throw new NotFoundException(
+        `The user with name ${name} does not exists.`,
+      );
     const uuid = user.user_uuid;
     if (this.userProvider.hasPermission(user, req)) {
       await this.userRepo.remove(user);
@@ -97,20 +107,17 @@ export class UserService implements IUser {
 
   async update(body: UpdateUserDTO, name: string, req: CustomRequest) {
     let user = await this.userRepo.findOneBy({ name });
+    if (!user)
+      throw new NotFoundException(
+        `User with name ${body.name} does not exists.`,
+      );
     if (!this.userProvider.hasPermission(user, req))
       throw new ForbiddenException(
         'User does not meet the required permissions.',
       );
     const properties = this.userProvider.nonNullProperties(body);
 
-    // ! Melhorar logica para o caso seja inserido a senha e random = true
-    // if (properties.includes('random_pass')) {
-    //   const pass = this.userProvider.genRandomString(12, [0.7, 0.2, 0.1]);
-    //   user.pass = await this.userProvider.passHash(pass);
-    // }
-    // if (properties.includes('pass')) {
-    //   user.pass = await this.userProvider.passHash(body.pass);
-    // }
+    // * Se a senha for inserida e { random = true } a senha definida sera a inserida não a aleatoria
     let pass = null;
     [user, pass] = await this.userProvider.changeProperties(
       properties,
