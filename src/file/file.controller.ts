@@ -4,6 +4,7 @@ import {
   Post,
   Req,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,7 +15,9 @@ import { AuthGuard } from '@auth/auth.guard';
 import { RolesGuard } from '@roles/roles.guard';
 import { Access } from '@roles/roles.decorators';
 import { AccessLevel } from '@roles/roles.enum';
+import { GlobalExceptionFilter } from '@globals/filter/globalException.filter';
 
+@UseFilters(GlobalExceptionFilter)
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
