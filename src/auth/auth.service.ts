@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@user/entity/user.entity';
@@ -6,19 +11,33 @@ import { Repository } from 'typeorm';
 import { AuthDTO } from './dto/auth.dto';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
-import { AuthProvider } from './auth.provider';
+import { compare } from 'bcrypt';
 
+// ! TESTAR
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
-    private authProvider: AuthProvider,
     private jwtService: JwtService,
   ) {}
 
   async signIn(arg: AuthDTO): Promise<{ token: string }> {
-    const user = await this.userRepo.findOneBy({ name: arg.name });
-    await this.authProvider.checkIfExistsAndCompare(arg, user.pass);
+    const user = await this.userRepo.findOne({
+      where: { name: arg.name },
+      select: ['pass', 'is2FAActivated', 'user_uuid', 'access_level'],
+    });
+    if (!user)
+      throw new NotFoundException(
+        `User with name ${arg.name} does not exists.`,
+      );
+    if (!(await compare(arg.pass, user.pass)))
+      throw new BadRequestException(
+        `The password for the user '${arg.name}' it is incorrect.`,
+      );
+    if (user.is2FAActivated)
+      throw new UnauthorizedException(
+        'This user has 2FA activated please login with it.',
+      );
     const payload = {
       name: user.name,
       uuid: user.user_uuid,
@@ -31,17 +50,8 @@ export class AuthService {
     };
   }
 
-  // * Só eu e deus sabe o que esse codigo faz
-  async gen2FASecret(arg: AuthDTO) {
-    const user = await this.userRepo.findOneBy({ name: arg.name });
-
-    if (!user.is2FAActivated)
-      throw new UnauthorizedException(
-        'Two-factor authentication is deactivated for this user.',
-      );
-
-    await this.authProvider.checkIfExistsAndCompare(arg, user.pass);
-
+  // * Agora só deus sabe o que esse codigo faz
+  async generate2FASecret(name: string, user: User) {
     const secret = authenticator.generateSecret(256);
 
     const otpAuthUrl = authenticator.keyuri(user.name, 'Hsr-Nest', secret);
@@ -50,7 +60,6 @@ export class AuthService {
     await this.userRepo.save(user);
 
     return {
-      token: secret,
       url: otpAuthUrl,
     };
   }
@@ -61,19 +70,38 @@ export class AuthService {
   }
 
   // * Se { User.is2FAActivated == true } retornará o oposto
-  async turn2FA(arg: AuthDTO) {
+  async turn2FA(arg: AuthDTO, code?: string | undefined) {
+    if (code && !/^\d{6}$/.test(code))
+      throw new BadRequestException('The code must have 6 digits');
+
+    let url: string | null = null;
     const user = await this.userRepo.findOneBy({ name: arg.name });
 
-    await this.authProvider.checkIfExistsAndCompare(arg, user.pass);
+    if (!user)
+      throw new NotFoundException(
+        `User with name ${arg.name} does not exists.`,
+      );
 
     user.is2FAActivated = !user.is2FAActivated;
 
-    if (user.is2FAActivated === false) user.twoFacSecret = null;
+    if (user.is2FAActivated === false) {
+      if (code && !this.is2FACodeValid(code, user))
+        throw new UnauthorizedException('Wrong code inserted.');
 
-    await this.userRepo.save(user);
+      user.twoFacSecret = null;
+      await this.userRepo.save(user);
+    }
+    if (user.is2FAActivated === true && !user.twoFacSecret) {
+      if (!(await compare(arg.pass, user.pass)))
+        throw new BadRequestException(
+          `The password for the user '${arg.name}' it is incorrect.`,
+        );
+      url = (await this.generate2FASecret(arg.name, user)).url;
+    }
 
     return {
       message: `Two-Factor authentication was turned ${user.is2FAActivated ? 'on' : 'off'}.`,
+      url,
     };
   }
 
@@ -85,18 +113,24 @@ export class AuthService {
   }
 
   async loginW2FA(userName: string, code: string) {
-    const user = await this.userRepo.findOneBy({ name: userName });
-    user.twoFacSecret = (
-      await this.userRepo.findOne({
-        where: { name: userName },
-        select: { twoFacSecret: true },
-      })
-    ).twoFacSecret;
+    if (!/^\d{6}$/.test(code))
+      throw new BadRequestException('The code must have 6 digits');
+
+    const user = await this.userRepo.findOne({
+      where: { name: userName },
+      select: ['twoFacSecret', 'is2FAActivated', 'user_uuid', 'access_level'],
+    });
+
+    if (!user)
+      throw new NotFoundException(
+        `User with name ${userName} does not exists.`,
+      );
 
     if (!user.is2FAActivated)
-      throw new UnauthorizedException(
-        `Two-factor authentication is not activated for this user.`,
-      );
+      throw new UnauthorizedException({
+        code: '2FA_REQUIRED',
+        message: `Two-factor authentication is not activated for this user.`,
+      });
 
     const isValid = await this.is2FACodeValid(code, user);
 
