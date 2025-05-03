@@ -20,15 +20,16 @@ export class UserService implements IUser {
     @InjectRepository(User) private userRepo: Repository<User>,
     private readonly userProvider: UserProvider,
   ) {}
-
   async create(body: UserDTO, req: CustomRequest) {
     const isPassNotPresent = !body.pass;
+    const weights =
+      body.weights ?? this.userProvider.genRandomNormalizedWeights();
     let pass: string = null;
     if (req.login_status === true)
       throw new BadRequestException("You can't be logged in.");
     if (isPassNotPresent)
       // Generate a random password if the pass is not present
-      pass = this.userProvider.genRandomString(12, [0.7, 0.2, 0.1]);
+      pass = this.userProvider.genRandomString(12, weights);
 
     body.pass = await this.userProvider.passHash(pass ?? body.pass);
 
