@@ -37,11 +37,10 @@ export class FileService {
       fileName: fileData.filename,
       filePath: fileData.path,
     });
-
-    if (
-      (await this.filesRepo.findOneBy({ fileName: fileData.filename })).id !==
-      undefined
-    )
+    const fileId =
+      (await this.filesRepo.findOneBy({ fileName: fileData.filename })) ??
+      undefined;
+    if (fileId !== undefined)
       throw new BadRequestException(
         `This image already exists you should update.`,
       );
