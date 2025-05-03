@@ -47,11 +47,12 @@ describe('UserService', () => {
 
     it('should create a user with a random password if pass is not provided', async () => {
       const req: CustomRequest = { login_status: false } as CustomRequest;
-      const body: UserDTO = { name: 'test' } as UserDTO;
+      const body: UserDTO = {
+        name: 'test',
+        weights: [0.7, 0.2, 0.1],
+      } as UserDTO;
       const hashedPass = 'hashedPass';
       const randomPass = 'randomPass';
-
-      // @ts-expect-error: testing
       jest.spyOn(userProvider, 'genRandomString').mockReturnValue(randomPass);
       jest.spyOn(userProvider, 'passHash').mockResolvedValue(hashedPass);
       jest.spyOn(userRepo, 'create').mockReturnValue(body as any);
