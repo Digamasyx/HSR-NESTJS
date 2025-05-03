@@ -41,6 +41,12 @@ export class UserProvider {
     return req.user.uuid === user.user_uuid;
   }
 
+  /* Adicionar os pesos ao DTO se possivel pesos aleatorios
+     possivelmente o tipo seria number[] | boolean | undefined
+     caso number[] o tratamento já está feito e tendo tolerancia de 1e-6
+     caso boolean gerar os pesos de forma aleatoria e normaliza-los
+     caso undefined usar os pesos padrão [1/3, 1/3, 1/3]
+  */
   genRandomString(size: number, weights?: number[]) {
     if (!weights) {
       weights = [1 / 3, 1 / 3, 1 / 3];
@@ -89,6 +95,12 @@ export class UserProvider {
     return result;
   }
 
+  genRandomNormalizedWeights = () => {
+    const weights = Array.from({ length: 3 }, () => Math.random());
+    const weightSum = weights.reduce((prev, curr) => prev + curr);
+    return weights.map((curr) => curr / weightSum);
+  };
+
   nonNullProperties<T extends object>(arg: Partial<T>): (keyof T)[] {
     const obj = Object.entries(arg);
     const properties: Array<keyof T> = [];
@@ -135,7 +147,7 @@ export class UserProvider {
       case UserProps.create_wo_pass:
         const create_wo_pass = arg as CreateWoPassArg;
         return {
-          message: `User with name: ${create_wo_pass.name} was create with the following pass: ${create_wo_pass.pass}`,
+          message: `User with name: ${create_wo_pass.name} was created with the following pass: ${create_wo_pass.pass}`,
         };
       case UserProps.delete:
         const delete_arg = arg as DeleteArg;
