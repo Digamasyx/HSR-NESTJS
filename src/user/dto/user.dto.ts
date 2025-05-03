@@ -8,6 +8,7 @@ export class UserDTO {
 
   random_pass?: boolean = false;
   log?: boolean = false;
+  weights?: Array<number>;
 }
 export class UpdateUserDTO extends OmitType(PartialType(UserDTO), [
   'log',
