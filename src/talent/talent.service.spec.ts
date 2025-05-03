@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { TalentService } from './talent.service';
 import { Talent } from './entity/talent.entity';
-import { Char } from 'src/char/entity/char.entity';
+import { Char } from '@char/entity/char.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TalentDTO } from './dto/talent.dto';
