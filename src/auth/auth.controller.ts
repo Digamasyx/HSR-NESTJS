@@ -9,16 +9,12 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login-jwt')
-  signIn(@Body() authDTO: AuthDTO /* , @Request() req */) {
+  signIn(@Body() authDTO: AuthDTO) {
     return this.authService.signIn(authDTO);
   }
-  @Post('turn-2fa')
-  turn2FA(@Body() authDTO: AuthDTO) {
-    return this.authService.turn2FA(authDTO);
-  }
-  @Post('gen-2fa')
-  gen2FASecret(@Body() authDTO: AuthDTO) {
-    return this.authService.gen2FASecret(authDTO);
+  @Post('turn-2fa/:code?')
+  turn2FA(@Body() authDTO: AuthDTO, @Param('code') code?: string) {
+    return this.authService.turn2FA(authDTO, code);
   }
   @Post('login-2fa/:name/:code')
   loginW2FA(@Param('name') name: string, @Param('code') code: string) {
