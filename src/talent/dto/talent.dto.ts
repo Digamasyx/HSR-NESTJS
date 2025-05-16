@@ -1,6 +1,6 @@
 import { IsBoolean, IsEnum, IsNumber } from 'class-validator';
 import { Effect } from '../enums/talent.enum';
-import { Stats } from '../types/talent.types';
+import { Stats } from '../../globals/types/talent.types';
 
 export class TalentDTO {
   @IsEnum(Effect)

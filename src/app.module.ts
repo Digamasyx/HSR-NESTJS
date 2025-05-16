@@ -11,6 +11,7 @@ import { CustomLogger } from '@globals/services/custom-logger.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from '@globals/interceptors/logging.interceptor';
 import { FileModule } from '@file/file.module';
+import { LightConeModule } from './light-cone/light-cone.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FileModule } from '@file/file.module';
     CharModule,
     TalentModule,
     FileModule,
+    LightConeModule,
   ],
   controllers: [AppController],
   providers: [

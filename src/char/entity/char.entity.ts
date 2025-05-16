@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { Paths, Types } from '../enums/char.enum';
 import { Talent } from '@talent/entity/talent.entity';
 import { LevelRange } from '../types/char.types';
 import { Files } from '@file/entity/file.entity';
+import { LightCone } from 'src/light-cone/entity/light-cone.entity';
 
 @Entity()
 export class Char {
@@ -56,6 +57,9 @@ export class Char {
     enum: Types,
   })
   type: Types;
+
+  @OneToOne(() => LightCone, (lc) => lc.char)
+  signature_lc: LightCone;
 
   @OneToMany(() => Files, (files) => files.char)
   files: Files[];

@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Effect } from '../enums/talent.enum';
 import { Char } from '@char/entity/char.entity';
-import { Stats } from '../types/talent.types';
+import { Stats } from '@globals/types/stat.types';
 
 @Entity()
 export class Talent {
