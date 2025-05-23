@@ -13,8 +13,5 @@ export class LcDTO {
   };
 
   effect: Effects;
-
-  @IsString()
-  sig_char: string;
 }
 export class UpdateLcDTO extends PartialType(LcDTO) {}

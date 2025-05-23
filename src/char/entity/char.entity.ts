@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { Paths, Types } from '../enums/char.enum';
 import { Talent } from '@talent/entity/talent.entity';
 import { LevelRange } from '../types/char.types';
@@ -25,6 +32,7 @@ export class Char {
   })
   asc: number;
 
+  // TODO: Mudar para JSON
   @Column({
     type: 'varchar',
     length: 1000,
@@ -58,8 +66,9 @@ export class Char {
   })
   type: Types;
 
-  @OneToOne(() => LightCone, (lc) => lc.char)
-  signature_lc: LightCone;
+  @OneToOne(() => LightCone)
+  @JoinColumn()
+  lightcone: LightCone;
 
   @OneToMany(() => Files, (files) => files.char)
   files: Files[];

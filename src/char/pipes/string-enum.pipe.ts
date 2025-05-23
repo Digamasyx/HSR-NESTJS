@@ -10,7 +10,7 @@ export class ValidateStringEnumPipe implements PipeTransform {
       ...(Object.values(Types) as string[]),
     ];
 
-    if (regex.test(value) || validEnums.includes(value)) {
+    if (regex.test(value) || validEnums.includes(value.toUpperCase())) {
       return value;
     }
 

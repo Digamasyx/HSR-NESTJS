@@ -9,6 +9,7 @@ export type Stats =
   | 'effect_hit_rate'
   | 'effect_res'
   | 'energy_regen'
+  | 'follow_up_bonus'
   | TypeBoost;
 type TypeBoost = `${Types}_dmg_bonus`;
 type Types =

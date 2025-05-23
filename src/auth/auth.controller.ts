@@ -12,7 +12,7 @@ export class AuthController {
   signIn(@Body() authDTO: AuthDTO) {
     return this.authService.signIn(authDTO);
   }
-  @Post('turn-2fa/:code?')
+  @Post('turn-2fa{/:code}')
   turn2FA(@Body() authDTO: AuthDTO, @Param('code') code?: string) {
     return this.authService.turn2FA(authDTO, code);
   }
