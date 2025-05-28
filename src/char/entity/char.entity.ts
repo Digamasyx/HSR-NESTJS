@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Paths, Types } from '../enums/char.enum';
 import { Talent } from '@talent/entity/talent.entity';
-import { LevelRange } from '../types/char.types';
+import { LevelRange, MappedStat } from '../types/char.types';
 import { Files } from '@file/entity/file.entity';
 import { LightCone } from 'src/light-cone/entity/light-cone.entity';
 
@@ -34,22 +34,19 @@ export class Char {
 
   // TODO: Mudar para JSON
   @Column({
-    type: 'varchar',
-    length: 1000,
+    type: 'json',
   })
-  atk: string;
+  atk: MappedStat[];
 
   @Column({
-    type: 'varchar',
-    length: 1000,
+    type: 'json',
   })
-  def: string;
+  def: MappedStat[];
 
   @Column({
-    type: 'varchar',
-    length: 1000,
+    type: 'json',
   })
-  hp: string;
+  hp: MappedStat[];
 
   @Column()
   spd: number;
