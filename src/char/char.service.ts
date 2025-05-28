@@ -20,9 +20,7 @@ export class CharService implements IChar {
       typeof body.asc === 'undefined'
         ? this.charProvider.defineAsc(body.level)
         : body.asc)();
-    for (const i of ['hp', 'atk', 'def']) {
-      body[i] = this.charProvider.jsonArrayToString(body[i]) as string;
-    }
+
     const charExists = await this.charRepo.findOneBy({ name: body.name });
     if (charExists) {
       throw new BadRequestException(
@@ -85,20 +83,12 @@ export class CharService implements IChar {
 
     const properties = this.charProvider.nonNullProperties(body);
 
-    properties.forEach((val) => {
-      if (['atk', 'def', 'hp'].includes(val as string)) {
-        char[val] = this.charProvider.stringToJsonArray(char[val]);
-      }
-    });
-
     char = this.charProvider.changeProperties(properties, char, body);
 
-    properties.forEach((val) => {
-      if (['atk', 'def', 'hp'].includes(val as string)) {
-        char[val] = this.charProvider.jsonArrayToString(char[val]);
-      }
-    });
-
     await this.charRepo.save(char);
+
+    return {
+      message: `The following fields were changed: '${properties.join(',')}'`,
+    };
   }
 }
