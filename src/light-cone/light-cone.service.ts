@@ -16,6 +16,12 @@ export class LightConeService /* implements ILightCone */ {
   ) {}
 
   async create(body: LcDTO, charName: string): Promise<{ message: string }> {
+    if (this.lcRepo.findOneBy({ name: body.name })) {
+      throw new BadRequestException(
+        `Light cone with name: ${body.name} already exists.`,
+      );
+    }
+
     const char = await this.charRepo.findOneBy({
       name: this.lcProvider.capitalize(charName),
     });
