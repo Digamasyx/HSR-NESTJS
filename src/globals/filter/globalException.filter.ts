@@ -23,6 +23,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       },
       timestamp: this.globalProvider.formatDate(new Date(Date.now())),
       path: request.url,
+      body: request.body,
     });
   }
 }
