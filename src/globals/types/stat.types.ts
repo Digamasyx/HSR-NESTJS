@@ -1,4 +1,4 @@
-export type Stats =
+﻿export type Stats =
   | 'atk'
   | 'hp'
   | 'def'

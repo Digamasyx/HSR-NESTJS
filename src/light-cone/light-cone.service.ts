@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+﻿import { BadRequestException, Injectable } from '@nestjs/common';
 // import { ILightCone } from './interface/light-cone.interface';
 import { LcDTO } from './dto/light-cone.dto';
 import { InjectRepository } from '@nestjs/typeorm';

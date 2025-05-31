@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+﻿import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { Effects } from '../types/effect.type';
 
 @Entity()

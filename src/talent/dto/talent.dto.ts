@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsNumber } from 'class-validator';
+﻿import { IsBoolean, IsEnum, IsNumber } from 'class-validator';
 import { Effect } from '../enums/talent.enum';
 import { Stats } from '@globals/types/stat.types';
 

@@ -1,4 +1,4 @@
-import { Stats } from '@globals/types/stat.types';
+﻿import { Stats } from '@globals/types/stat.types';
 
 export type Effects = {
   base_effect: Stats;

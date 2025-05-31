@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+﻿import { BadRequestException, Injectable } from '@nestjs/common';
 import { Stats } from '@globals/types/stat.types';
 import { TalentDTO } from './dto/talent.dto';
 

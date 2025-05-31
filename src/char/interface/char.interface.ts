@@ -1,4 +1,4 @@
-import { CharDTO, UpdateCharDTO } from '../dto/char.dto';
+﻿import { CharDTO, UpdateCharDTO } from '../dto/char.dto';
 import { Char } from '../entity/char.entity';
 
 export interface IChar {
