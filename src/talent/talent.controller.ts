@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
+  Patch,
   Post,
   UseFilters,
   UseGuards,
@@ -14,12 +16,13 @@ import { AuthGuard } from '@auth/auth.guard';
 import { RolesGuard } from '@roles/roles.guard';
 import { Access } from '@roles/roles.decorators';
 import { AccessLevel } from '@roles/roles.enum';
-import { TalentDTO } from './dto/talent.dto';
+import { TalentDTO, UpdateTalentDTO } from './dto/talent.dto';
 import { GlobalExceptionFilter } from '@globals/filter/globalException.filter';
+import { ITalent } from './interface/talent.interface';
 
 @UseFilters(GlobalExceptionFilter)
 @Controller('talent')
-export class TalentController {
+export class TalentController implements ITalent {
   constructor(private readonly talentService: TalentService) {}
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -51,5 +54,13 @@ export class TalentController {
   @Delete(':charName')
   removeAll(@Param('charName') charName: string) {
     return this.talentService.removeAll(charName);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Access(AccessLevel.ADMIN)
+  @Patch('update/:talent_id')
+  @Header('Content-Type', 'text/plain')
+  update(@Param('talent_id') id: number, @Body() body: UpdateTalentDTO) {
+    return this.talentService.update(id, body);
   }
 }

@@ -1,12 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Talent } from './entity/talent.entity';
 import { Repository } from 'typeorm';
-import { TalentDTO } from './dto/talent.dto';
+import { TalentDTO, UpdateTalentDTO } from './dto/talent.dto';
 import { Char } from '@char/entity/char.entity';
 import { TalentProvider } from './talent.provider';
 import { ITalent } from './interface/talent.interface';
 
+// ! Falta o update
 @Injectable()
 export class TalentService implements ITalent {
   constructor(
@@ -51,7 +56,7 @@ export class TalentService implements ITalent {
       );
     return talent;
   }
-  // ! Testar
+
   async remove(id: number) {
     const talent = await this.talentRepo.findOneBy({ talent_id: id });
     if (!talent)
@@ -62,7 +67,6 @@ export class TalentService implements ITalent {
     };
   }
 
-  // ! Testar
   async removeAll(charName: string) {
     const char = await this.charRepo.findOneBy({ name: charName });
     if (!char)
@@ -78,5 +82,47 @@ export class TalentService implements ITalent {
     await this.charRepo.save(char);
 
     return { message: `All talents from char: ${charName}, were removed.` };
+  }
+
+  async update(talent_id: number, updateDTO: UpdateTalentDTO): Promise<string> {
+    if (!this.talentProvider.isTrueNumber(talent_id)) {
+      throw new BadRequestException('Invalid talent ID format');
+    }
+
+    const talent = await this.talentRepo.findOneBy({ talent_id });
+    if (!talent) {
+      throw new NotFoundException(`Talent with ID ${talent_id} not found`);
+    }
+
+    const changes: { prop: string; from: any; to: any }[] = [];
+
+    const allowedProperties = ['effect', 'stat', 'value', 'multiplicative'];
+    const safeUpdate: Partial<Talent> = {};
+
+    for (const prop of allowedProperties) {
+      if (updateDTO[prop] !== undefined && updateDTO[prop] !== talent[prop]) {
+        changes.push({
+          prop,
+          from: talent[prop],
+          to: updateDTO[prop],
+        });
+
+        safeUpdate[prop] = updateDTO[prop];
+      }
+    }
+
+    if (Object.keys(safeUpdate).length > 0) {
+      Object.assign(talent, safeUpdate);
+      await this.talentRepo.save(talent);
+    }
+
+    let message = `Talent ${talent_id} updated.`;
+    if (changes.length > 0) {
+      const changeList = changes.map((c) => `${c.prop}: ${c.from} -> ${c.to}`);
+      message += `\nChanges:\n- ${changeList.join('\n- ')}`;
+    } else {
+      message += '\nNo changes detected.';
+    }
+    return message;
   }
 }
