@@ -76,7 +76,8 @@ export class CharService implements IChar {
     return { message: `The char with name: ${name} was removed.` };
   }
 
-  // ! Testar
+  // ! Atualizar seguir padrão de { talent.service.ts } e depreciar
+  // ! { nonNullProperties } & { changeProperties }
   async update(body: UpdateCharDTO, name: string) {
     let char = (await this.charRepo.findOneBy({ name })) as any;
     if (!char) throw new BadRequestException();

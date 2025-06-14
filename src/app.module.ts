@@ -12,6 +12,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from '@globals/interceptors/logging.interceptor';
 import { FileModule } from '@file/file.module';
 import { LightConeModule } from './light-cone/light-cone.module';
+import { RelicsModule } from './relics/relics.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LightConeModule } from './light-cone/light-cone.module';
     TalentModule,
     FileModule,
     LightConeModule,
+    RelicsModule,
   ],
   controllers: [AppController],
   providers: [

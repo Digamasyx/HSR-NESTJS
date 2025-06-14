@@ -41,4 +41,20 @@ export class LightConeService /* implements ILightCone */ {
       message: `Light cone with name: '${body.name}' With signaure char: '${char.name}'`,
     };
   }
+
+  async remove(name: string): Promise<{ message: string }> {
+    let lc = await this.lcRepo.findOneBy({ name });
+    let lcName = '';
+    if (!lc) {
+      lc = (await this.charRepo.findOneBy({ name })).lightcone;
+      if (!lc)
+        throw new BadRequestException(
+          `Char or Light Cone with name: ${name} was not found.`,
+        );
+    }
+    lcName = lc.name;
+    await this.lcRepo.remove(lc);
+
+    return { message: `Light Cone with name: ${lcName} was removed.` };
+  }
 }
