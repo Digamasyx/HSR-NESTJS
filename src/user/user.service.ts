@@ -14,6 +14,7 @@ import { UserProps } from './types/user.enum';
 import { IUser } from './interface/user.interface';
 import { CustomRequest } from '@globals/interface/global.interface';
 
+// ! Refatorar a rota totalmente
 @Injectable()
 export class UserService implements IUser {
   constructor(
