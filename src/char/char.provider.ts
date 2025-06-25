@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { LevelRange, MappedStat } from './types/char.types';
-import { CharDTO } from './dto/char.dto';
 import { Paths, Types } from './enums/char.enum';
 
 @Injectable()
@@ -21,46 +20,6 @@ export class CharProvider {
     if (currLevel <= 60) return 4;
     if (currLevel <= 70) return 5;
     return 6;
-  }
-
-  nonNullProperties<T extends CharDTO>(arg: Partial<T>): (keyof T)[] {
-    const obj = Object.entries(arg);
-    const properties: (keyof T)[] = [];
-    for (let i = 0; i < obj.length; i++) properties.push(obj[i][0] as keyof T);
-    if (typeof properties[0] !== 'string')
-      throw new BadRequestException('0 arguments present in body');
-    return properties;
-  }
-
-  changeProperties(
-    idx: (keyof CharDTO)[],
-    curr: CharDTO,
-    next: Partial<CharDTO>,
-  ) {
-    for (const i of idx) {
-      if (!Array.isArray(curr[i])) {
-        curr[i] = [] as never;
-      }
-      switch (i) {
-        case 'atk':
-        case 'def':
-        case 'hp':
-          if (next[i]) {
-            next[i].forEach((nextStat) => {
-              const currentStatIdx = curr[i].findIndex(
-                (currStat) => currStat.level === nextStat.level,
-              );
-              if (currentStatIdx !== -1) {
-                curr[i][currentStatIdx].value = nextStat.value;
-              } else {
-                curr[i].push(nextStat);
-              }
-            });
-          }
-          break;
-      }
-    }
-    return curr;
   }
 
   jsonArrayToString(value: MappedStat[]): string {

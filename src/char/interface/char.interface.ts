@@ -5,5 +5,5 @@ export interface IChar {
   create(body: CharDTO): Promise<{ message: string }>;
   find(name: string): Promise<Char | Char[]>;
   remove(name: string): Promise<{ message: string }>;
-  update(body: UpdateCharDTO, name: string): Promise<{ message: string }>;
+  update(body: UpdateCharDTO, name: string): Promise<string>;
 }
