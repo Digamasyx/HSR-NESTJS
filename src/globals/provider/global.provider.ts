@@ -13,4 +13,29 @@ export class GlobalProvider {
 
     return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
   }
+
+  updateAssign<T>(
+    body: any,
+    origin: T,
+    allowedProp: Array<string>,
+  ): {
+    changes: { prop: string; from: any; to: any }[];
+    alterOrigin: Partial<T>;
+  } {
+    const safeUpdate: Partial<T> = {};
+    const changes: { prop: string; from: any; to: any }[] = [];
+
+    for (const prop of allowedProp) {
+      if (body[prop] !== undefined && body[prop] !== origin[prop]) {
+        changes.push({
+          prop,
+          from: origin[prop],
+          to: body[prop],
+        });
+        safeUpdate[prop] = body[prop];
+      }
+    }
+
+    return { changes, alterOrigin: safeUpdate };
+  }
 }

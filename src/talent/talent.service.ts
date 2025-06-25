@@ -10,6 +10,7 @@ import { TalentDTO, UpdateTalentDTO } from './dto/talent.dto';
 import { Char } from '@char/entity/char.entity';
 import { TalentProvider } from './talent.provider';
 import { ITalent } from './interface/talent.interface';
+import { GlobalProvider } from '@globals/provider/global.provider';
 
 // ! Falta o update
 @Injectable()
@@ -17,7 +18,8 @@ export class TalentService implements ITalent {
   constructor(
     @InjectRepository(Talent) private talentRepo: Repository<Talent>,
     @InjectRepository(Char) private readonly charRepo: Repository<Char>,
-    private talentProvider: TalentProvider,
+    private readonly talentProvider: TalentProvider,
+    private readonly globalProvider: GlobalProvider,
   ) {}
 
   // * Teoricamente tá Ok 👌
@@ -94,25 +96,16 @@ export class TalentService implements ITalent {
       throw new NotFoundException(`Talent with ID ${talent_id} not found`);
     }
 
-    const changes: { prop: string; from: any; to: any }[] = [];
-
     const allowedProperties = ['effect', 'stat', 'value', 'multiplicative'];
-    const safeUpdate: Partial<Talent> = {};
 
-    for (const prop of allowedProperties) {
-      if (updateDTO[prop] !== undefined && updateDTO[prop] !== talent[prop]) {
-        changes.push({
-          prop,
-          from: talent[prop],
-          to: updateDTO[prop],
-        });
+    const { changes, alterOrigin } = this.globalProvider.updateAssign(
+      updateDTO,
+      talent,
+      allowedProperties,
+    );
 
-        safeUpdate[prop] = updateDTO[prop];
-      }
-    }
-
-    if (Object.keys(safeUpdate).length > 0) {
-      Object.assign(talent, safeUpdate);
+    if (Object.keys(alterOrigin).length > 0) {
+      Object.assign(talent, alterOrigin);
       await this.talentRepo.save(talent);
     }
 
