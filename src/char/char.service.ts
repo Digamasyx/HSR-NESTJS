@@ -6,12 +6,14 @@ import { Char } from './entity/char.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CharProvider } from './char.provider';
 import { Paths, Types } from './enums/char.enum';
+import { GlobalProvider } from '@globals/provider/global.provider';
 
 @Injectable()
 export class CharService implements IChar {
   constructor(
     @InjectRepository(Char) private charRepo: Repository<Char>,
     private readonly charProvider: CharProvider,
+    private readonly globalProvider: GlobalProvider,
   ) {}
 
   async create(body: CharDTO) {
@@ -76,20 +78,42 @@ export class CharService implements IChar {
     return { message: `The char with name: ${name} was removed.` };
   }
 
-  // ! Atualizar seguir padrão de { talent.service.ts } e depreciar
-  // ! { nonNullProperties } & { changeProperties }
   async update(body: UpdateCharDTO, name: string) {
-    let char = (await this.charRepo.findOneBy({ name })) as any;
-    if (!char) throw new BadRequestException();
+    const char = await this.charRepo.findOneBy({ name });
+    if (!char)
+      throw new BadRequestException(`Char with name ${name} does not exists.`);
 
-    const properties = this.charProvider.nonNullProperties(body);
+    const allowedProperties: any = [
+      'name',
+      'level',
+      'asc',
+      'atk',
+      'def',
+      'hp',
+      'spd',
+      'path',
+      'type',
+    ] as const;
 
-    char = this.charProvider.changeProperties(properties, char, body);
+    const { changes, alterOrigin } = this.globalProvider.updateAssign(
+      body,
+      char,
+      allowedProperties,
+    );
 
-    await this.charRepo.save(char);
+    if (Object.keys(alterOrigin).length > 0) {
+      Object.assign(char, alterOrigin);
+      await this.charRepo.save(char);
+    }
 
-    return {
-      message: `The following fields were changed: '${properties.join(',')}'`,
-    };
+    let message = `Char ${char.name} updated.`;
+    if (changes.length > 0) {
+      const changeList = changes.map((c) => `${c.prop}: ${c.from} -> ${c.to}`);
+      message += `\nChanges:\n ${changeList.join('\n- ')}`;
+    } else {
+      message += '\nNo changes were made.';
+    }
+
+    return message;
   }
 }

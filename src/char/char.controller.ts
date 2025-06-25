@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Patch,
   Post,
@@ -48,6 +49,7 @@ export class CharController implements IChar {
   @UseGuards(AuthGuard, RolesGuard)
   @Access(AccessLevel.ADMIN)
   @Patch(':name')
+  @Header('Content-Type', 'text/plain')
   update(
     @Body(new ValidationPipe()) body: UpdateCharDTO,
     @Param('name') name: string,
