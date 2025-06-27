@@ -14,5 +14,5 @@ export interface IUser {
     body: UpdateUserDTO,
     name: string,
     req: CustomRequest,
-  ): Promise<{ message: string }>;
+  ): Promise<string>;
 }
