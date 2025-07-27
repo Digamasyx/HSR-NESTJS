@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Patch,
   Post,
@@ -54,6 +55,7 @@ export class UserController implements IUser {
     return this.userService.delete(name, req);
   }
 
+  @Header('Content-Type', 'text/plain')
   @Patch(':name')
   @UseGuards(AuthGuard, RolesGuard)
   @Access(AccessLevel.USER, AccessLevel.ADMIN)

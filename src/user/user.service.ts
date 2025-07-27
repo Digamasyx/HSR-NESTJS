@@ -13,12 +13,15 @@ import { UserProvider } from './user.provider';
 import { UserProps } from './types/user.enum';
 import { IUser } from './interface/user.interface';
 import { CustomRequest } from '@globals/interface/global.interface';
+import { GlobalProvider } from '@globals/provider/global.provider';
 
+// ! Refatorar a rota totalmente
 @Injectable()
 export class UserService implements IUser {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     private readonly userProvider: UserProvider,
+    private readonly globalProvider: GlobalProvider,
   ) {}
   async create(body: UserDTO, req: CustomRequest) {
     const isPassNotPresent = !body.pass;
@@ -107,7 +110,7 @@ export class UserService implements IUser {
   }
 
   async update(body: UpdateUserDTO, name: string, req: CustomRequest) {
-    let user = await this.userRepo.findOneBy({ name });
+    const user = await this.userRepo.findOneBy({ name });
     if (!user)
       throw new NotFoundException(
         `User with name ${body.name} does not exists.`,
@@ -116,25 +119,45 @@ export class UserService implements IUser {
       throw new ForbiddenException(
         'User does not meet the required permissions.',
       );
-    const properties = this.userProvider.nonNullProperties(body);
 
-    // * Se a senha for inserida e { random = true } a senha definida sera a inserida não a aleatoria
-    let pass = null;
-    [user, pass] = await this.userProvider.changeProperties(
-      properties,
-      user,
+    const allowedProperties: Array<any> = ['name', 'pass'];
+
+    const { changes, alterOrigin } = this.globalProvider.updateAssign(
       body,
-      body.random_pass,
+      user,
+      allowedProperties,
     );
-    await this.userRepo.save(user);
-    // ! Testar mensagem de retorno
-    if (!body.random_pass) {
-      return this.userProvider.outMessage(UserProps.update, { properties });
-    } else {
-      return this.userProvider.outMessage(UserProps.update_w_random, {
-        properties,
-        pass: pass,
-      });
+    if (body.random_pass) {
+      if (body.weights)
+        alterOrigin.pass = this.userProvider.genRandomString(
+          12,
+          this.userProvider.genRandomNormalizedWeights(),
+        );
+      else alterOrigin.pass = this.userProvider.genRandomString(12);
     }
+    if (Object.keys(alterOrigin).length > 0) {
+      Object.assign(user, alterOrigin);
+      await this.userRepo.save(user);
+    }
+
+    let message = `User ${user.name} updated.`;
+    if (changes.length > 0) {
+      const changeList = changes.map((c) => `${c.prop}: ${c.from} -> ${c.to}`);
+      message += `\nChanges:\n ${changeList.join('\n- ')}`;
+      if (body.random_pass) message += `\nRandom_Pass: ${user.pass}`;
+    } else {
+      message += '\nNo changes were made.';
+    }
+
+    // // ! Testar mensagem de retorno
+    // if (!body.random_pass) {
+    //   return this.userProvider.outMessage(UserProps.update, { properties });
+    // } else {
+    //   return this.userProvider.outMessage(UserProps.update_w_random, {
+    //     properties,
+    //     pass: pass,
+    //   });
+    // }
+    return message;
   }
 }

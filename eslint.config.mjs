@@ -39,7 +39,7 @@ export default [
 
       parserOptions: {
         project: 'tsconfig.json',
-        tsconfigRootDir: 'C:\\Users\\digam\\Desktop\\Code\\hsr',
+        tsconfigRootDir: __dirname,
       },
     },
 
