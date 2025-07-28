@@ -105,6 +105,7 @@ export class UserService implements IUser {
 
   async update(body: UpdateUserDTO, name: string, req: CustomRequest) {
     const user = await this.userRepo.findOneBy({ name });
+    let oldName = '';
     if (!user)
       throw new NotFoundException(
         `User with name ${body.name} does not exists.`,
@@ -121,20 +122,28 @@ export class UserService implements IUser {
       user,
       allowedProperties,
     );
+    if (body.pass)
+      alterOrigin.pass = await this.userProvider.passHash(alterOrigin.pass);
+    if (body.name) oldName = user.name;
     if (body.random_pass) {
       if (body.weights)
-        alterOrigin.pass = this.userProvider.genRandomString(
-          12,
-          this.userProvider.genRandomNormalizedWeights(),
+        alterOrigin.pass = await this.userProvider.passHash(
+          this.userProvider.genRandomString(
+            12,
+            this.userProvider.genRandomNormalizedWeights(),
+          ),
         );
-      else alterOrigin.pass = this.userProvider.genRandomString(12);
+      else
+        alterOrigin.pass = await this.userProvider.passHash(
+          this.userProvider.genRandomString(12),
+        );
     }
     if (Object.keys(alterOrigin).length > 0) {
       Object.assign(user, alterOrigin);
       await this.userRepo.save(user);
     }
 
-    let message = `User ${user.name} updated.`;
+    let message = `User ${oldName} updated.`;
     if (changes.length > 0) {
       const changeList = changes.map((c) => `${c.prop}: ${c.from} -> ${c.to}`);
       message += `\nChanges:\n ${changeList.join('\n- ')}`;
