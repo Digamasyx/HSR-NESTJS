@@ -68,24 +68,19 @@ export class UserService implements IUser {
     return user;
   }
 
-  async findAll(req: CustomRequest) {
+  async findAll(req: CustomRequest, page: number, limit: number) {
+    const queryBuilder = this.userRepo
+      .createQueryBuilder('user')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('user.created_at', 'DESC');
+
     const userStatus = this.userProvider.userStatus(req);
     if (userStatus === 'not_logged' || userStatus === 'User') {
-      const users = await this.userRepo.find({
-        select: {
-          name: true,
-          created_at: true,
-        },
-      });
-      if (users.length < 1) {
-        throw new NotFoundException('There are no users registered.');
-      }
-      return users;
+      queryBuilder.select(['user.name', 'user.created_at']);
     }
-    const users = await this.userRepo.find();
-    if (users.length < 1) {
-      throw new NotFoundException('There are no users registered.');
-    }
+    const [users, total] = await queryBuilder.getManyAndCount();
+    if (!total) throw new NotFoundException('There are no users registered.');
     return users;
   }
 
@@ -103,7 +98,6 @@ export class UserService implements IUser {
         uuid: uuid,
       });
     }
-    // ? Adicionar metodo identico ao outMessage so que para erros e que receba { HttpStatus } como tipo
     throw new UnauthorizedException(
       `User does not match the required permissions and/or is not the removed user in question.`,
     );

@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request as Req,
   UseFilters,
   UseGuards,
@@ -38,8 +39,12 @@ export class UserController implements IUser {
 
   @Get()
   @UseGuards(AuthGuard)
-  findAll(@Req() req: CustomRequest) {
-    return this.userService.findAll(req);
+  findAll(
+    @Req() req: CustomRequest,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    return this.userService.findAll(req, page, limit);
   }
 
   @Get(':name')
