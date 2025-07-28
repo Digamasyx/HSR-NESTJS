@@ -35,8 +35,6 @@ export class TalentController implements ITalent {
     return this.talentService.create(body, char);
   }
 
-  @UseGuards(AuthGuard, RolesGuard)
-  @Access(AccessLevel.ADMIN)
   @Get(':charNameId')
   find(@Param('charNameId') char: string | number) {
     return this.talentService.find(char);

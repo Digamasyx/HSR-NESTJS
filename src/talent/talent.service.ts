@@ -39,24 +39,32 @@ export class TalentService implements ITalent {
   }
   // ? Considero isso como ok 😐
   async find(id_or_char: string | number) {
-    let talent: Talent | Talent[];
-    if (this.talentProvider.isTrueNumber(id_or_char)) {
-      id_or_char = Number(id_or_char);
+    const talentQr = this.talentRepo.createQueryBuilder('talent');
+    id_or_char = this.talentProvider.isTrueNumber(id_or_char)
+      ? Number(id_or_char)
+      : id_or_char;
+    if (typeof id_or_char === 'number') {
       if (id_or_char < 1)
         throw new BadRequestException(
           'Only positive ID values can be inserted.',
         );
-      talent = await this.talentRepo.findOneBy({ talent_id: id_or_char });
+      talentQr.where('talent.id = :talent_id', { talent_id: id_or_char });
     } else {
       if (id_or_char.length === 0)
         throw new BadRequestException('Empty char name was inserted.');
-      talent = await this.talentRepo.findBy({ char: { name: id_or_char } });
+      talentQr
+        .innerJoin('talent.char', 'char')
+        .where('char.name = :charName', { charName: id_or_char });
     }
-    if (!talent)
+    const result =
+      typeof id_or_char === 'number'
+        ? await talentQr.getOne()
+        : await talentQr.getMany();
+    if (!result || (Array.isArray(result) && result.length === 0))
       throw new BadRequestException(
         `Talent with ${typeof id_or_char === 'number' ? 'specified Id:' : 'associated Char:'} ${id_or_char} was not found.`,
       );
-    return talent;
+    return result;
   }
 
   async remove(id: number) {
