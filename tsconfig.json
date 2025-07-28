@@ -30,7 +30,9 @@
       "@globals/*": ["./src/globals/*"],
       "@roles/*": ["./src/roles/*"],
       "@talent/*": ["./src/talent/*"],
-      "@user/*": ["./src/user/*"]
+      "@user/*": ["./src/user/*"],
+      "@relics/*": ["./src/relics/*"],
+      "@light-cone/*": ["./src/light-cone/*"]
     }
   }
 }

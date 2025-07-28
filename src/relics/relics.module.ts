@@ -4,6 +4,6 @@ import { RelicsService } from './relics.service';
 
 @Module({
   controllers: [RelicsController],
-  providers: [RelicsService]
+  providers: [RelicsService],
 })
 export class RelicsModule {}
