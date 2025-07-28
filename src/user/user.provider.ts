@@ -110,32 +110,6 @@ export class UserProvider {
     return properties;
   }
 
-  async changeProperties<T extends object>(
-    indexes: (keyof T)[],
-    curr: any,
-    next: Partial<T>,
-    random_pass: boolean,
-  ) {
-    let pass: string | null = null;
-    if (
-      indexes.includes('pass' as keyof T) &&
-      indexes.includes('random_pass' as keyof T)
-    ) {
-      indexes = indexes.filter((prop) => prop !== 'random_pass');
-    }
-    for (const i of indexes) {
-      if (i === 'random_pass') {
-        pass = this.genRandomString(12, [0.7, 0.2, 0.1]);
-        curr.pass = await this.passHash(pass);
-      }
-      if (i === 'pass') {
-        curr.pass = await this.passHash(curr.pass);
-      }
-      curr[i] = next[i];
-    }
-    return random_pass ? [curr, pass] : [curr, 0];
-  }
-
   outMessage<T extends UserProps, K extends object>(
     caller: T,
     arg: ArgType<T, K>,
