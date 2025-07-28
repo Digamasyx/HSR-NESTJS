@@ -1,4 +1,8 @@
-﻿import { BadRequestException, Injectable } from '@nestjs/common';
+﻿import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { IChar } from './interface/char.interface';
 import { CharDTO, UpdateCharDTO } from './dto/char.dto';
 import { Repository } from 'typeorm';
@@ -39,33 +43,48 @@ export class CharService implements IChar {
   async find(arg: string): Promise<Char>;
   async find(arg: Paths | Types): Promise<Char[]>;
   async find(arg: string | Paths | Types): Promise<Char | Char[]> {
-    let char: Promise<Char> | Promise<Char[]>;
+    const charQr = this.charRepo.createQueryBuilder('char');
+
     if (arg.length <= 0)
       throw new BadRequestException("The name field can't be empty.");
 
     if (this.charProvider.isPaths(arg)) {
-      char = this.charRepo.findBy({ path: arg });
-      if (!(await char))
+      charQr.where('char.path = :path', { path: arg });
+    } else if (this.charProvider.isTypes(arg)) {
+      charQr.where('char.type = :type', { type: arg });
+    } else {
+      charQr
+        .where('char.name = :name', { name: arg })
+        .leftJoinAndSelect('char.talent', 'talent')
+        .leftJoinAndSelect('char.files', 'files');
+    }
+
+    const total = await charQr.getCount();
+
+    if (!total) {
+      if (this.charProvider.isPaths(arg))
         throw new BadRequestException(
           `There are 0 chars for this path: ${arg}.`,
         );
-    } else if (this.charProvider.isTypes(arg)) {
-      char = this.charRepo.findBy({ type: arg });
-      if (!(await char))
+      else if (this.charProvider.isTypes(arg))
         throw new BadRequestException(
           `There are 0 chars for this type: ${arg}.`,
         );
-    } else
-      char = this.charRepo.findOne({
-        where: { name: arg },
-        relations: { talent: true, files: true },
-      });
+      else
+        throw new BadRequestException(
+          `The char with specified name: ${arg} does not exists.`,
+        );
+    }
+    return total > 1 ? charQr.getMany() : charQr.getOne();
+  }
 
-    if (!(await char))
-      throw new BadRequestException(
-        `The char with specified name: ${arg} does not exists.`,
-      );
-    return char;
+  async findAll(page: number, limit: number): Promise<Char[]> {
+    const [chars, total] = await this.charRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    if (!total) throw new NotFoundException('There are no characters saved.');
+    return chars;
   }
 
   async remove(name: string) {

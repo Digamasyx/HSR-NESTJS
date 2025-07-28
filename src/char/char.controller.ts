@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseFilters,
   UseGuards,
   ValidationPipe,
@@ -21,6 +22,7 @@ import { IChar } from './interface/char.interface';
 import { Paths, Types } from './enums/char.enum';
 import { ValidateStringEnumPipe } from './pipes/string-enum.pipe';
 import { GlobalExceptionFilter } from '@globals/filter/globalException.filter';
+import { Char } from './entity/char.entity';
 
 @Controller('char')
 @UseFilters(GlobalExceptionFilter)
@@ -37,6 +39,11 @@ export class CharController implements IChar {
   @Get(':name')
   find(@Param('name', ValidateStringEnumPipe) name: string | Paths | Types) {
     return this.charService.find(name);
+  }
+
+  @Get()
+  findAll(@Query() page = 1, @Query() limit = 10): Promise<Char[]> {
+    return this.charService.findAll(page, limit);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
