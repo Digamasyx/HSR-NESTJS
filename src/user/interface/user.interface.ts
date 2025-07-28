@@ -4,7 +4,11 @@ import { CustomRequest } from '@globals/interface/global.interface';
 
 export interface IUser {
   find(name: string, req: CustomRequest): Promise<User>;
-  findAll(req: CustomRequest): Promise<Array<User>>;
+  findAll(
+    req: CustomRequest,
+    page: number,
+    limit: number,
+  ): Promise<Array<User>>;
   create(
     body: UserDTO,
     req: CustomRequest,
