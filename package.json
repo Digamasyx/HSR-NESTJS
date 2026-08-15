@@ -92,7 +92,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -100,19 +100,19 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "@auth/(.*)": "<rootDir>/auth/$1",
-      "@char/(.*)": "<rootDir>/char/$1",
-      "@database/(.*)": "<rootDir>/database/$1",
-      "@file/(.*)": "<rootDir>/file/$1",
-      "@globals/(.*)": "<rootDir>/globals/$1",
-      "@roles/(.*)": "<rootDir>/roles/$1",
-      "@talent/(.*)": "<rootDir>/talent/$1",
-      "@user/(.*)": "<rootDir>/user/$1",
-      "@relics/(.*)": "<rootDir>/relics/$1",
-      "@light-cone/(.*)": "<rootDir>/light-cone/$1"
+      "@auth/(.*)": "<rootDir>/src/auth/$1",
+      "@char/(.*)": "<rootDir>/src/char/$1",
+      "@database/(.*)": "<rootDir>/src/database/$1",
+      "@file/(.*)": "<rootDir>/src/file/$1",
+      "@globals/(.*)": "<rootDir>/src/globals/$1",
+      "@roles/(.*)": "<rootDir>/src/roles/$1",
+      "@talent/(.*)": "<rootDir>/src/talent/$1",
+      "@user/(.*)": "<rootDir>/src/user/$1",
+      "@relics/(.*)": "<rootDir>/src/relics/$1",
+      "@light-cone/(.*)": "<rootDir>/src/light-cone/$1"
     }
   },
   "allowScripts": {
