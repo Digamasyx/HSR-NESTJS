@@ -9,7 +9,9 @@ describe('UserController', () => {
     const controller = new UserController(userService as any);
     const req = { login_status: false } as any;
 
-    await expect(controller.create({ name: 'alice' } as any, req)).resolves.toEqual({ message: 'created' });
+    await expect(
+      controller.create({ name: 'alice' } as any, req),
+    ).resolves.toEqual({ message: 'created' });
     expect(userService.create).toHaveBeenCalledWith({ name: 'alice' }, req);
   });
 
@@ -21,8 +23,13 @@ describe('UserController', () => {
     const controller = new UserController(userService as any);
     const req = { login_status: true } as any;
 
-    await expect(controller.findAll(req, 1, 10)).resolves.toEqual([{ name: 'alice' }]);
-    expect(userService.findAll).toHaveBeenCalledWith(req, 1, 10);
+    await expect(
+      controller.findAll(req, { page: 1, limit: 10 }),
+    ).resolves.toEqual([{ name: 'alice' }]);
+    expect(userService.findAll).toHaveBeenCalledWith(req, {
+      page: 1,
+      limit: 10,
+    });
   });
 
   it('should delegate find to the service', async () => {
@@ -33,7 +40,9 @@ describe('UserController', () => {
     const controller = new UserController(userService as any);
     const req = { login_status: true } as any;
 
-    await expect(controller.find('alice', req)).resolves.toEqual({ name: 'alice' });
+    await expect(controller.find('alice', req)).resolves.toEqual({
+      name: 'alice',
+    });
     expect(userService.find).toHaveBeenCalledWith('alice', req);
   });
 
@@ -45,19 +54,27 @@ describe('UserController', () => {
     const controller = new UserController(userService as any);
     const req = { login_status: true } as any;
 
-    await expect(controller.delete('alice', req)).resolves.toEqual({ message: 'deleted' });
+    await expect(controller.delete('alice', req)).resolves.toEqual({
+      message: 'deleted',
+    });
     expect(userService.delete).toHaveBeenCalledWith('alice', req);
   });
 
   it('should delegate update to the service', async () => {
     const userService = {
-      update: jest.fn().mockResolvedValue('updated'),
+      update: jest.fn().mockResolvedValue({ message: 'User alice updated.' }),
     };
 
     const controller = new UserController(userService as any);
     const req = { login_status: true } as any;
 
-    await expect(controller.update({ name: 'alice' } as any, 'alice', req)).resolves.toBe('updated');
-    expect(userService.update).toHaveBeenCalledWith({ name: 'alice' }, 'alice', req);
+    await expect(
+      controller.update({ name: 'alice' } as any, 'alice', req),
+    ).resolves.toEqual({ message: 'User alice updated.' });
+    expect(userService.update).toHaveBeenCalledWith(
+      { name: 'alice' },
+      'alice',
+      req,
+    );
   });
 });

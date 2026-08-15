@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../../src/user/user.service';
 
 describe('UserService', () => {
@@ -16,11 +21,18 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
     await expect(
-      service.create({ name: 'alice', pass: 'plain', log: false } as any, { login_status: false } as any),
-    ).resolves.toBeUndefined();
+      service.create(
+        { name: 'alice', pass: 'plain', includePassInResponse: true } as any,
+        { login_status: false } as any,
+      ),
+    ).resolves.toEqual({ message: expect.any(String) });
     expect(userRepo.insert).toHaveBeenCalled();
   });
 
@@ -35,21 +47,29 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
     await expect(
-      service.create({ name: 'alice', pass: 'plain' } as any, { login_status: true, user: { access_level: 1 } } as any),
+      service.create(
+        { name: 'alice', pass: 'plain' } as any,
+        { login_status: true, user: { access_level: 1 } } as any,
+      ),
     ).rejects.toThrow(BadRequestException);
   });
 
   it('should return public user data for not logged users', async () => {
     const userRepo = {
-      findOne: jest.fn().mockResolvedValue({ name: 'alice', created_at: new Date() }),
+      findOne: jest
+        .fn()
+        .mockResolvedValue({ name: 'alice', created_at: new Date() }),
       findOneBy: jest.fn(),
     };
     const userProvider = {
-      userStatus: jest.fn().mockReturnValue('not_logged'),
-      hasPermission: jest.fn(),
+      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -57,9 +77,15 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
-    await expect(service.find('alice', { login_status: false } as any)).resolves.toEqual({
+    await expect(
+      service.find('alice', { login_status: false } as any),
+    ).resolves.toEqual({
       name: 'alice',
       created_at: expect.any(Date),
     });
@@ -71,8 +97,7 @@ describe('UserService', () => {
       findOneBy: jest.fn(),
     };
     const userProvider = {
-      userStatus: jest.fn().mockReturnValue('not_logged'),
-      hasPermission: jest.fn(),
+      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -80,9 +105,15 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
-    await expect(service.find('ghost', { login_status: false } as any)).rejects.toThrow(NotFoundException);
+    await expect(
+      service.find('ghost', { login_status: false } as any),
+    ).rejects.toThrow(NotFoundException);
   });
 
   it('should return users list filtered by page and limit', async () => {
@@ -96,8 +127,7 @@ describe('UserService', () => {
       }),
     };
     const userProvider = {
-      userStatus: jest.fn().mockReturnValue('not_logged'),
-      hasPermission: jest.fn(),
+      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -105,19 +135,26 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
-    await expect(service.findAll({ login_status: false } as any, 1, 10)).resolves.toEqual([{ name: 'alice' }]);
+    await expect(
+      service.findAll({ login_status: false } as any, { page: 1, limit: 10 }),
+    ).resolves.toEqual([{ name: 'alice' }]);
   });
 
   it('should delete a user when it has permission', async () => {
     const userRepo = {
-      findOneBy: jest.fn().mockResolvedValue({ name: 'alice', user_uuid: 'uuid-1' }),
+      findOneBy: jest
+        .fn()
+        .mockResolvedValue({ name: 'alice', user_uuid: 'uuid-1' }),
       remove: jest.fn().mockResolvedValue(undefined),
     };
     const userProvider = {
-      userStatus: jest.fn(),
-      hasPermission: jest.fn().mockReturnValue(true),
+      hasPermission: jest.fn().mockReturnValue({ status: true, level: 1 }),
       outMessage: jest.fn().mockReturnValue({ message: 'deleted' }),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -125,20 +162,30 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
-    await expect(service.delete('alice', { login_status: true, user: { access_level: 1, uuid: 'uuid-1' } } as any)).resolves.toEqual({
+    await expect(
+      service.delete('alice', {
+        login_status: true,
+        user: { access_level: 1, uuid: 'uuid-1' },
+      } as any),
+    ).resolves.toEqual({
       message: 'deleted',
     });
   });
 
   it('should throw UnauthorizedException when user has no permission to delete', async () => {
     const userRepo = {
-      findOneBy: jest.fn().mockResolvedValue({ name: 'alice', user_uuid: 'uuid-2' }),
+      findOneBy: jest
+        .fn()
+        .mockResolvedValue({ name: 'alice', user_uuid: 'uuid-2' }),
     };
     const userProvider = {
-      userStatus: jest.fn(),
-      hasPermission: jest.fn().mockReturnValue(false),
+      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -146,21 +193,31 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
-
-    await expect(service.delete('alice', { login_status: true, user: { access_level: 1, uuid: 'uuid-1' } } as any)).rejects.toThrow(
-      UnauthorizedException,
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
     );
+
+    await expect(
+      service.delete('alice', {
+        login_status: true,
+        user: { access_level: 1, uuid: 'uuid-1' },
+      } as any),
+    ).rejects.toThrow(UnauthorizedException);
   });
 
   it('should update a user and return a change message', async () => {
     const userRepo = {
-      findOneBy: jest.fn().mockResolvedValue({ name: 'alice', pass: 'old-pass', user_uuid: 'uuid-1' }),
+      findOneBy: jest.fn().mockResolvedValue({
+        name: 'alice',
+        pass: 'old-pass',
+        user_uuid: 'uuid-1',
+      }),
       save: jest.fn().mockResolvedValue(undefined),
     };
     const userProvider = {
-      userStatus: jest.fn(),
-      hasPermission: jest.fn().mockReturnValue(true),
+      hasPermission: jest.fn().mockReturnValue({ status: true, level: 1 }),
       outMessage: jest.fn(),
       passHash: jest.fn().mockResolvedValue('new-hash'),
       genRandomNormalizedWeights: jest.fn(),
@@ -173,20 +230,28 @@ describe('UserService', () => {
       }),
     };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
     await expect(
-      service.update({ name: 'alice2' } as any, 'alice', { login_status: true, user: { access_level: 1, uuid: 'uuid-1' } } as any),
-    ).resolves.toContain('User alice updated.');
+      service.update({ name: 'alice2' } as any, 'alice', {
+        login_status: true,
+        user: { access_level: 1, uuid: 'uuid-1' },
+      } as any),
+    ).resolves.toEqual({ message: expect.stringContaining('User alice updated') });
   });
 
   it('should throw ForbiddenException when update request lacks permission', async () => {
     const userRepo = {
-      findOneBy: jest.fn().mockResolvedValue({ name: 'alice', user_uuid: 'uuid-2' }),
+      findOneBy: jest
+        .fn()
+        .mockResolvedValue({ name: 'alice', user_uuid: 'uuid-2' }),
     };
     const userProvider = {
-      userStatus: jest.fn(),
-      hasPermission: jest.fn().mockReturnValue(false),
+      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -194,10 +259,17 @@ describe('UserService', () => {
     };
     const globalProvider = { updateAssign: jest.fn() };
 
-    const service = new UserService(userRepo as any, userProvider as any, globalProvider as any);
+    const service = new UserService(
+      userRepo as any,
+      userProvider as any,
+      globalProvider as any,
+    );
 
     await expect(
-      service.update({ name: 'new-name' } as any, 'alice', { login_status: true, user: { access_level: 1, uuid: 'uuid-1' } } as any),
+      service.update({ name: 'new-name' } as any, 'alice', {
+        login_status: true,
+        user: { access_level: 1, uuid: 'uuid-1' },
+      } as any),
     ).rejects.toThrow(ForbiddenException);
   });
 });
