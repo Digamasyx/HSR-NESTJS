@@ -2,7 +2,7 @@
 <Project>
   <PropertyGroup>
     <PackageJsonName Condition="$(PackageJsonName) == ''">hsr</PackageJsonName>
-    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">0.5.0</PackageJsonVersion>
+    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">1.0.0</PackageJsonVersion>
     <PackageJsonDescription Condition="$(PackageJsonDescription) == ''"></PackageJsonDescription>
     <PackageJsonAuthor Condition="$(PackageJsonAuthor) == ''">DigamaSyx</PackageJsonAuthor>
     <PackageJsonPrivate Condition="$(PackageJsonPrivate) == ''">true</PackageJsonPrivate>
