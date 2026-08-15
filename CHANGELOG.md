@@ -1,3 +1,10 @@
+# [1.0.0-alpha.3](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2026-08-15)
+
+
+### Features
+
+* add Swagger metadata to public DTOs and controllers ([8104375](https://github.com/Digamasyx/HSR-NESTJS/commit/8104375a4ce687b600d229f0faa1cff17ef74636))
+
 # [1.0.0-alpha.2](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2026-08-15)
 
 
