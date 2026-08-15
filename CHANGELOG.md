@@ -1,3 +1,10 @@
+# [1.0.0-alpha.2](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2026-08-15)
+
+
+### Features
+
+* **char:** resolve TS2307 import errors in char.entity.ts and sharedEntity.module.ts ([9f11b3b](https://github.com/Digamasyx/HSR-NESTJS/commit/9f11b3bc21a29354b0bd524f8912d983782a52f1))
+
 # 1.0.0-alpha.1 (2026-08-15)
 
 
