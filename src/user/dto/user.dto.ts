@@ -1,13 +1,13 @@
 import { PartialType, OmitType } from '@nestjs/mapped-types';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsSumBetween } from '@user/validator/array.sum.validator';
 import {
-  ApiHideProperty,
-  ApiProperty,
-  ApiPropertyOptional,
-} from '@nestjs/swagger';
-import {
+  ArrayMaxSize,
+  ArrayMinSize,
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsStrongPassword,
@@ -51,11 +51,21 @@ export class UserDTO {
   random_pass?: boolean = false;
 
   @IsBoolean()
-  @ApiHideProperty()
-  log?: boolean = false;
+  @IsOptional()
+  @ApiPropertyOptional({
+    type: Boolean,
+    default: false,
+    description: 'Define se a senha inserida deve ser retornada',
+    example: false,
+  })
+  includePassInResponse?: boolean = false;
 
   @IsOptional()
   @IsArray()
+  @ArrayMinSize(3)
+  @ArrayMaxSize(3)
+  @IsNumber({}, { each: true })
+  @IsSumBetween(1, 1)
   @ApiPropertyOptional({
     type: [Number],
     isArray: true,
@@ -67,5 +77,11 @@ export class UserDTO {
   weights?: number[];
 }
 export class UpdateUserDTO extends OmitType(PartialType(UserDTO), [
-  'log',
+  'includePassInResponse',
 ] as const) {}
+export class UserResponseDTO {
+  @ApiProperty({ type: String, description: 'Retorno usual do endpoint' })
+  @IsString()
+  @IsNotEmpty()
+  message: string;
+}
