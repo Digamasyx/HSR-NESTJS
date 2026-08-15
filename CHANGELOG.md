@@ -1,3 +1,17 @@
+# [1.0.0-alpha.4](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2026-08-15)
+
+
+### Features
+
+* **user:** add custom validator for weights array sum ([6fbcadd](https://github.com/Digamasyx/HSR-NESTJS/commit/6fbcaddab83482fe3e7768593648dc150a6fc3c4))
+* **user:** add pagination validation with PaginationQueryDTO ([9bcb50b](https://github.com/Digamasyx/HSR-NESTJS/commit/9bcb50b909f4178889537d26e38e955bc9dbfe07))
+* **user:** standardize response types and create UserResponseDTO ([d02b169](https://github.com/Digamasyx/HSR-NESTJS/commit/d02b1698de35b215685910154052a19dbe90a6c9))
+
+
+### BREAKING CHANGES
+
+* **user:** Methods now consistently return { message: string }
+
 # [1.0.0-alpha.3](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2026-08-15)
 
 
