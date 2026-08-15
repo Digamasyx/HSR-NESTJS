@@ -1,6 +1,35 @@
-<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.6311650">
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk\1.0.6311650" >
   <PropertyGroup>
-    <StartupCommand>npm run start</StartupCommand>
+    <!-- Define que o projeto roda como um servidor em vez de uma aplicação web comum -->
+    <ProjectTypes>node</ProjectTypes>
+    <!-- O comando exato que o botão de Play (F5) deve disparar -->
+    <StartupCommand>npm run start:dev</StartupCommand>
+    <!-- Vincula os botões nativos de Compilar e Limpar do VS aos comandos do Nest -->
+    <BuildCommand>npm run build</BuildCommand>
+    <CleanCommand>npm run lint</CleanCommand>
+    <!-- Faz o Test Explorer do VS entender os seus testes em TypeScript -->
     <JavaScriptTestRoot>src\</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+    <TestCommand>npm run test</TestCommand>
   </PropertyGroup>
+  <!-- Garante que o Visual Studio saiba que a saída final fica na pasta dist -->
+  <PropertyGroup>
+    <PublishAssetsDirectory>$(MSBuildProjectDirectory)\dist</PublishAssetsDirectory>
+    <ShouldRunBuildScript>true</ShouldRunBuildScript>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Adicione esta linha caso queira abrir o navegador na porta do Nest ao dar Play -->
+    <DefaultLaunchUrl>http://localhost:3000</DefaultLaunchUrl>
+    <ProjectTypes>node</ProjectTypes>
+    <StartupCommand>npm run start:debug</StartupCommand>
+    <BuildCommand>npm run build</BuildCommand>
+    <CleanCommand>npm run lint</CleanCommand>
+    <JavaScriptTestRoot>src\</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+    <TestCommand>npm run test</TestCommand>
+    <StartupCommandWorkingDirectory>$(MSBuildProjectDirectory)\</StartupCommandWorkingDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
 </Project>

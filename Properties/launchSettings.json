@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "HSR-NESTJS": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:3000",
+      "environmentVariables": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

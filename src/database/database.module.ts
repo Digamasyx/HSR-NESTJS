@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
-        type: 'mysql',
+        type: 'mariadb',
         host: config.get('DB_HOST'),
         port: Number(config.get('DB_PORT')),
         username: config.get('DB_USERNAME'),

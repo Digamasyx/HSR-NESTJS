@@ -4,7 +4,7 @@ import { Char } from '@char/entity/char.entity';
 import { Files } from '@file/entity/file.entity';
 import { Talent } from '@talent/entity/talent.entity';
 import { User } from '@user/entity/user.entity';
-import { LightCone } from 'src/light-cone/entity/light-cone.entity';
+import { LightCone } from '@light-cone/entity/light-cone.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],

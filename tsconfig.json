@@ -22,7 +22,6 @@
     "listEmittedFiles": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": true,
-    "isolatedModules": true,
     "paths": {
       "@auth/*": [ "./src/auth/*" ],
       "@char/*": [ "./src/char/*" ],

@@ -1,0 +1,6 @@
+{
+  "npm.autoDetect": "on",
+  "npm.enableScriptExplorer": true,
+  "npm.exclude": "",
+  "task.allowAutomaticTasks": "always"
+}

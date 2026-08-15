@@ -1,0 +1,49 @@
+{
+  "commands": [
+    {
+      "name": "build",
+      "command": "nest build",
+      "type": "build"
+    },
+    {
+      "name": "format",
+      "command": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""
+    },
+    {
+      "name": "start",
+      "command": "nest start"
+    },
+    {
+      "name": "type-check",
+      "command": "npx tsc7 --noEmit"
+    },
+    {
+      "name": "start:dev",
+      "command": "nest start --watch"
+    },
+    {
+      "name": "start:debug",
+      "command": "nest start --debug --watch"
+    },
+    {
+      "name": "lint",
+      "command": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+    },
+    {
+      "name": "test",
+      "command": "jest"
+    },
+    {
+      "name": "test:watch",
+      "command": "jest --watch"
+    },
+    {
+      "name": "test:verbose",
+      "command": "jest --verbose"
+    },
+    {
+      "command": "jest --coverage",
+      "name": "test:cov"
+    }
+  ]
+}
