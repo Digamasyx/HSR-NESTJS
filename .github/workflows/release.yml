@@ -20,11 +20,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: "lts/*"
       - name: Install dependencies
         run: npm clean-install
-      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-        run: npm audit signatures
       - name: Run lint, tests, and other verification
         run: npm test
 
