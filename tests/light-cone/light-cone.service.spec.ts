@@ -14,9 +14,15 @@ describe('LightConeService', () => {
     };
     const lcProvider = { capitalize: jest.fn().mockReturnValue('Asta') };
 
-    const service = new LightConeService(lcRepo as any, charRepo as any, lcProvider as any);
+    const service = new LightConeService(
+      lcRepo as any,
+      charRepo as any,
+      lcProvider as any,
+    );
 
-    await expect(service.create({ name: 'The Hike' } as any, 'asta')).resolves.toEqual({
+    await expect(
+      service.create({ name: 'The Hike' } as any, 'asta'),
+    ).resolves.toEqual({
       message: "Light cone with name: 'The Hike' With signaure char: 'Asta'",
     });
     expect(charRepo.save).toHaveBeenCalled();
@@ -34,11 +40,15 @@ describe('LightConeService', () => {
     };
     const lcProvider = { capitalize: jest.fn().mockReturnValue('Asta') };
 
-    const service = new LightConeService(lcRepo as any, charRepo as any, lcProvider as any);
-
-    await expect(service.create({ name: 'The Hike' } as any, 'asta')).rejects.toThrow(
-      BadRequestException,
+    const service = new LightConeService(
+      lcRepo as any,
+      charRepo as any,
+      lcProvider as any,
     );
+
+    await expect(
+      service.create({ name: 'The Hike' } as any, 'asta'),
+    ).rejects.toThrow(BadRequestException);
   });
 
   it('should remove a light cone by name', async () => {
@@ -49,7 +59,11 @@ describe('LightConeService', () => {
     const charRepo = { findOneBy: jest.fn() };
     const lcProvider = { capitalize: jest.fn() };
 
-    const service = new LightConeService(lcRepo as any, charRepo as any, lcProvider as any);
+    const service = new LightConeService(
+      lcRepo as any,
+      charRepo as any,
+      lcProvider as any,
+    );
 
     await expect(service.remove('The Hike')).resolves.toEqual({
       message: 'Light Cone with name: The Hike was removed.',
