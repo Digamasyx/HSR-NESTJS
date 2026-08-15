@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: "lts/*"
+          node-version: "lts/*"
       - name: Install dependencies
         run: npm clean-install
       - name: Run lint, tests, and other verification
