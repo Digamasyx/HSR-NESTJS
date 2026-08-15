@@ -14,31 +14,25 @@ import {
   UpdateArg,
 } from './types/user.type';
 import { CustomRequest } from '@globals/interface/global.interface';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UserProvider {
   async passHash(pass: string) {
-    const randomSalt = Math.floor(Math.random() * (15 - 10) + 10);
+    const randomSalt = 12;
     return await hash(pass, randomSalt);
   }
 
-  userStatus(req: CustomRequest) {
-    switch (req.login_status) {
-      case false:
-        return 'not_logged';
-      case true:
-        return req.user.access_level === AccessLevel.ADMIN
-          ? AccessLevel.ADMIN
-          : AccessLevel.USER;
-      default:
-        return 'not_logged';
-    }
-  }
-
-  hasPermission(user: any, req: CustomRequest) {
-    if (!req.login_status) return false;
-    if (req.user.access_level === AccessLevel.ADMIN) return true;
-    return req.user.uuid === user.user_uuid;
+  hasPermission<T extends User>(
+    req: CustomRequest,
+    user?: T,
+  ): { status: boolean; level: AccessLevel | 'None' } {
+    if (!req.login_status) return { status: false, level: 'None' };
+    if (req.user.access_level === AccessLevel.ADMIN)
+      return { status: true, level: AccessLevel.ADMIN };
+    return req.user.uuid === user.user_uuid
+      ? { status: true, level: AccessLevel.USER }
+      : { status: false, level: 'None' };
   }
 
   /* Adicionar os pesos ao DTO se possivel pesos aleatorios
