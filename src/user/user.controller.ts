@@ -30,8 +30,8 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { PaginationQueryDTO } from './dto/pagination.dto';
 
-// ! TODO: adicionar o resto
 @ApiBearerAuth('JWT-AUTH')
 @ApiTags('User')
 @UseFilters(GlobalExceptionFilter)
@@ -55,12 +55,8 @@ export class UserController implements IUser {
   @ApiQuery({ name: 'page', type: Number, required: false, example: 1 })
   @ApiQuery({ name: 'limit', type: Number, required: false, example: 10 })
   @UseGuards(AuthGuard)
-  findAll(
-    @Req() req: CustomRequest,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-  ) {
-    return this.userService.findAll(req, page, limit);
+  findAll(@Req() req: CustomRequest, @Query() query: PaginationQueryDTO) {
+    return this.userService.findAll(req, query);
   }
 
   @Get(':name')
