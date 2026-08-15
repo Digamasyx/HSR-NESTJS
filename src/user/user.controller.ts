@@ -22,12 +22,25 @@ import { AccessLevel } from '@roles/roles.enum';
 import { IUser } from './interface/user.interface';
 import { CustomRequest } from '@globals/interface/global.interface';
 import { GlobalExceptionFilter } from '@globals/filter/globalException.filter';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
+// ! TODO: adicionar o resto
+@ApiBearerAuth('JWT-AUTH')
+@ApiTags('User')
 @UseFilters(GlobalExceptionFilter)
 @Controller('user')
 export class UserController implements IUser {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ tags: ['User', 'Create'] })
+  @ApiBody({ type: UserDTO })
   @Post('create')
   @UseGuards(AuthGuard)
   create(
@@ -38,6 +51,9 @@ export class UserController implements IUser {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Listar usuários', tags: ['User', 'List'] })
+  @ApiQuery({ name: 'page', type: Number, required: false, example: 1 })
+  @ApiQuery({ name: 'limit', type: Number, required: false, example: 10 })
   @UseGuards(AuthGuard)
   findAll(
     @Req() req: CustomRequest,
@@ -48,12 +64,16 @@ export class UserController implements IUser {
   }
 
   @Get(':name')
+  @ApiOperation({ summary: 'Buscar usuário por nome', tags: ['User', 'Read'] })
+  @ApiParam({ name: 'name', type: String, required: true })
   @UseGuards(AuthGuard)
   find(@Param('name') name: string, @Req() req: CustomRequest) {
     return this.userService.find(name, req);
   }
 
   @Delete(':name')
+  @ApiOperation({ summary: 'Excluir usuário', tags: ['User', 'Delete'] })
+  @ApiParam({ name: 'name', type: String, required: true })
   @UseGuards(AuthGuard, RolesGuard)
   @Access(AccessLevel.USER, AccessLevel.ADMIN)
   delete(@Param('name') name: string, @Req() req: CustomRequest) {
@@ -62,6 +82,8 @@ export class UserController implements IUser {
 
   @Header('Content-Type', 'text/plain')
   @Patch(':name')
+  @ApiOperation({ summary: 'Atualizar usuário', tags: ['User', 'Update'] })
+  @ApiParam({ name: 'name', type: String, required: true })
   @UseGuards(AuthGuard, RolesGuard)
   @Access(AccessLevel.USER, AccessLevel.ADMIN)
   update(
