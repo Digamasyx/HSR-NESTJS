@@ -7,10 +7,10 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
-    "target": "ES2021",
+    "target": "ES2025",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "rootDir": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -22,17 +22,19 @@
     "listEmittedFiles": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
     "paths": {
-      "@auth/*": ["./src/auth/*"],
-      "@char/*": ["./src/char/*"],
-      "@database/*": ["./src/database/*"],
-      "@file/*": ["./src/file/*"],
-      "@globals/*": ["./src/globals/*"],
-      "@roles/*": ["./src/roles/*"],
-      "@talent/*": ["./src/talent/*"],
-      "@user/*": ["./src/user/*"],
-      "@relics/*": ["./src/relics/*"],
-      "@light-cone/*": ["./src/light-cone/*"]
-    }
+      "@auth/*": [ "./src/auth/*" ],
+      "@char/*": [ "./src/char/*" ],
+      "@database/*": [ "./src/database/*" ],
+      "@file/*": [ "./src/file/*" ],
+      "@globals/*": [ "./src/globals/*" ],
+      "@roles/*": [ "./src/roles/*" ],
+      "@talent/*": [ "./src/talent/*" ],
+      "@user/*": [ "./src/user/*" ],
+      "@relics/*": [ "./src/relics/*" ],
+      "@light-cone/*": [ "./src/light-cone/*" ]
+    },
+    "types": ["jest"]
   }
 }
