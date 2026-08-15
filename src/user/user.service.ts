@@ -33,7 +33,6 @@ export class UserService implements IUser {
     if (isPassNotPresent)
       // Generate a random password if the pass is not present
       pass = this.userProvider.genRandomString(12, weights);
-
     body.pass = await this.userProvider.passHash(pass ?? body.pass);
 
     const user = this.userRepo.create(body);

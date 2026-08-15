@@ -13,10 +13,4 @@
   | TypeBoost;
 type TypeBoost = `${Types}_dmg_bonus`;
 type Types =
-  | 'physical'
-  | 'fire'
-  | 'ice'
-  | 'wind'
-  | 'lightning'
-  | 'quantum'
-  | 'imaginary';
+  'physical' | 'fire' | 'ice' | 'wind' | 'lightning' | 'quantum' | 'imaginary';

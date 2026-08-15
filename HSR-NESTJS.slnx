@@ -1,6 +1,6 @@
 <Solution>
   <Project Path="HSR-NESTJS.esproj">
-    <Build />
+    <Build Solution="Release|*" />
     <Deploy />
   </Project>
 </Solution>
