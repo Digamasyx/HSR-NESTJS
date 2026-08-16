@@ -1,3 +1,10 @@
+# [1.0.0-alpha.5](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2026-08-16)
+
+
+### Features
+
+* **logging:** implement IoLogger and replace CustomLogger with RequestLoggingInterceptor ([ae9f40a](https://github.com/Digamasyx/HSR-NESTJS/commit/ae9f40a27450c0bfe19ff8c1c5d1eb618c130568))
+
 # [1.0.0-alpha.4](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2026-08-15)
 
 
