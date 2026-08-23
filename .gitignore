@@ -41,3 +41,6 @@ lerna-debug.log*
 src/database/constants.ts
 notas.md
 .env
+diff.md
+commit.md
+REINTEGRACAO-NESTJS.md

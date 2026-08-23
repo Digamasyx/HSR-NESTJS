@@ -69,7 +69,9 @@ describe('UserService', () => {
       findOneBy: jest.fn(),
     };
     const userProvider = {
-      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
+      hasPermission: jest
+        .fn()
+        .mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -97,7 +99,9 @@ describe('UserService', () => {
       findOneBy: jest.fn(),
     };
     const userProvider = {
-      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
+      hasPermission: jest
+        .fn()
+        .mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -127,7 +131,9 @@ describe('UserService', () => {
       }),
     };
     const userProvider = {
-      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
+      hasPermission: jest
+        .fn()
+        .mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -185,7 +191,9 @@ describe('UserService', () => {
         .mockResolvedValue({ name: 'alice', user_uuid: 'uuid-2' }),
     };
     const userProvider = {
-      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
+      hasPermission: jest
+        .fn()
+        .mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
@@ -241,7 +249,9 @@ describe('UserService', () => {
         login_status: true,
         user: { access_level: 1, uuid: 'uuid-1' },
       } as any),
-    ).resolves.toEqual({ message: expect.stringContaining('User alice updated') });
+    ).resolves.toEqual({
+      message: expect.stringContaining('User alice updated'),
+    });
   });
 
   it('should throw ForbiddenException when update request lacks permission', async () => {
@@ -251,7 +261,9 @@ describe('UserService', () => {
         .mockResolvedValue({ name: 'alice', user_uuid: 'uuid-2' }),
     };
     const userProvider = {
-      hasPermission: jest.fn().mockReturnValue({ status: false, level: 'None' }),
+      hasPermission: jest
+        .fn()
+        .mockReturnValue({ status: false, level: 'None' }),
       outMessage: jest.fn(),
       passHash: jest.fn(),
       genRandomNormalizedWeights: jest.fn(),
