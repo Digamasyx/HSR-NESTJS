@@ -12,6 +12,7 @@ import { Paths, Types } from '../enums/char.enum';
 import { PartialType } from '@nestjs/mapped-types';
 import { Talent } from '@talent/entity/talent.entity';
 import { LevelRange, MappedStat } from '../types/char.types';
+import { IsLevelRange } from '@char/validator/range.validator';
 
 export class CharDTO {
   @ApiProperty({
@@ -28,6 +29,7 @@ export class CharDTO {
     example: '1/80',
   })
   @IsString()
+  @IsLevelRange()
   level: LevelRange;
 
   @ApiPropertyOptional({
