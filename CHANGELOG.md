@@ -1,3 +1,10 @@
+# [1.0.0-alpha.6](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2026-08-24)
+
+
+### Features
+
+* **char:** add custom level range validator to CharDTO ([9451646](https://github.com/Digamasyx/HSR-NESTJS/commit/9451646aa3a9501ba0dacad7db1acb97bf53f1a1))
+
 # [1.0.0-alpha.5](https://github.com/Digamasyx/HSR-NESTJS/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2026-08-16)
 
 
